@@ -69,11 +69,11 @@ public class AuctionsResource {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Description is required!\n").build();
 		} else if (auction.getPrice() <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Price must be greater than zero!\n").build();
-		} else if (auction.getUser_ID() == 0) {
+		} else if (auction.getUserId() == 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User ID is required!\n").build();
-		} else if (this.database.checkExistUserById(auction.getUser_ID()) == false) {
+		} else if (this.database.checkExistUserById(auction.getUserId()) == false) {
 			return Response.status(Response.Status.CONFLICT)
-					.entity("User with id \"" + auction.getUser_ID() + "\" not found!\n").build();
+					.entity("User with id \"" + auction.getUserId() + "\" not found!\n").build();
 		} else {
 			Auctions tmp = this.database.addAuction(auction);
 			if (tmp == null) {
@@ -98,14 +98,14 @@ public class AuctionsResource {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Description is required!\n").build();
 		} else if (auction.getPrice() <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Price must be greater than zero!\n").build();
-		} else if (auction.getUser_ID() == 0) {
+		} else if (auction.getUserId() == 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User ID is required!\n").build();
-		} else if (this.database.checkExistUserById(auction.getUser_ID()) == false) {
+		} else if (this.database.checkExistUserById(auction.getUserId()) == false) {
 			return Response.status(Response.Status.CONFLICT)
-					.entity("User with id \"" + auction.getUser_ID() + "\" not found!\n").build();
+					.entity("User with id \"" + auction.getUserId() + "\" not found!\n").build();
 		} else if (this.database.checkAuthorization(auction.getLogin(), auction.getPass()) == false) {
 			return Response.status(Response.Status.UNAUTHORIZED).entity("NOT_FOUND").build();
-		} else if (this.database.checkExistAuctionByIds(auction.getAuciton_ID(), auction.getUser_ID()) == false) {
+		} else if (this.database.checkExistAuctionByIds(auction.getAucitonId(), auction.getUserId()) == false) {
 			return Response.status(Response.Status.CONFLICT).entity("Wrong data!\n").build();
 		} else {
 			Auctions tmp = this.database.updateAuction(auction);

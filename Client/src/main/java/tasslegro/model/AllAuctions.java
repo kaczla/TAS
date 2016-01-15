@@ -130,16 +130,16 @@ public class AllAuctions extends CustomComponent implements View {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject objects = jsonArray.optJSONObject(i);
 				Image tmpImage = new Image();
-				if (objects.getInt("image_ID") > 0) {
+				if (objects.getInt("imageId") > 0) {
 					tmpImage.setSource(new ExternalResource(
-							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("image_ID"))));
+							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("imageId"))));
 				} else {
 					tmpImage.setSource(ImageNoImage.getImageSource());
 				}
 				tmpImage.setWidth("100px");
 				tmpImage.setHeight("100px");
 				try {
-					this.date = DateUtils.parseDateStrictly(objects.getString("end_Date"),
+					this.date = DateUtils.parseDateStrictly(objects.getString("endDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
 				} catch (JSONException e) {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
@@ -147,7 +147,7 @@ public class AllAuctions extends CustomComponent implements View {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
 				}
 
-				tmpString = String.valueOf(objects.getInt("auciton_ID"));
+				tmpString = String.valueOf(objects.getInt("aucitonId"));
 				Button tmpButton = new Button("Więcej", new Button.ClickListener() {
 					String id = tmpString;
 

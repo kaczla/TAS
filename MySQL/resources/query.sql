@@ -125,7 +125,7 @@ VALUES ( "", "", "admin@tasslegro.com", 123456789, "admin", "pass123", 0, "", ""
 
 INSERT INTO AUCTIONS( User_ID, Title, Description, Price, End_Date )
 VALUES ( "1", "Title1", "Description1", 1, DATE_ADD(NOW(),INTERVAL 2 WEEK) ),
-( "1", "Title2", "Description2", 2, DATE_ADD(NOW(),INTERVAL 2 WEEK) ),
+( "2", "Title2", "Description2", 2, DATE_ADD(NOW(),INTERVAL 2 WEEK) ),
 ( "1", "Title3", "Description3", 3, DATE_ADD(NOW(),INTERVAL 2 WEEK) ),
 ( "1", "Title4", "Description4", 4, DATE_ADD(NOW(),INTERVAL 2 WEEK) ),
 ( "1", "Po terminie", "Po terminie", 1000, NOW() ),

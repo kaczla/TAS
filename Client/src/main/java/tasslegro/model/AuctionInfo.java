@@ -134,9 +134,9 @@ public class AuctionInfo extends CustomComponent implements View {
 				this.layout.addComponent(this.auctionTitle);
 				this.auctionPrice = new Label("Cena: " + String.valueOf(objects.getDouble("price")) + " zł");
 				this.layout.addComponent(this.auctionPrice);
-				if (objects.getInt("image_ID") > 0) {
+				if (objects.getInt("imageId") > 0) {
 					this.auctionImage.setSource(new ExternalResource(
-							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("image_ID"))));
+							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("imageId"))));
 				} else {
 					this.auctionImage.setSource(ImageNoImage.getImageSource());
 				}
@@ -146,7 +146,7 @@ public class AuctionInfo extends CustomComponent implements View {
 				this.auctionDescription = new Label("Opis: " + objects.getString("description"));
 				this.layout.addComponent(this.auctionDescription);
 				try {
-					this.dateStart = DateUtils.parseDateStrictly(objects.getString("start_Date"),
+					this.dateStart = DateUtils.parseDateStrictly(objects.getString("startDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
 				} catch (JSONException e) {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
@@ -156,7 +156,7 @@ public class AuctionInfo extends CustomComponent implements View {
 				this.auctionDateStart = new Label("Wystawiono: " + this.dateFormat.format(this.dateStart));
 				this.layout.addComponent(this.auctionDateStart);
 				try {
-					this.dateEnd = DateUtils.parseDateStrictly(objects.getString("end_Date"),
+					this.dateEnd = DateUtils.parseDateStrictly(objects.getString("endDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
 				} catch (JSONException e) {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());

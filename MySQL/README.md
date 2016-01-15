@@ -43,11 +43,13 @@ Aby zmienić <b>adres docelowy bazy danych</b> dla sposobu <b>B</b> należy edyt
 Aby zmienić <b>login i hasło do bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>UserName</b> i <b>UserPassword</b> w klasie <b>MySQL</b> ([MySQL.java](src/MySQL/MySQL.java))
 </br>
 Jeżeli występują problemy ze znakami UTF-8 to należy dodać do pliku <b>/etc/mysql/mysql.conf.d/</b>:
-`[mysqld]
+```
+[mysqld]
 character-set-server=utf8
 collation-server=utf8_general_ci
 init-connect='SET NAMES utf8'
 [client]
-default-character-set=utf8`
+default-character-set=utf8
+```
 </br>
 </br>

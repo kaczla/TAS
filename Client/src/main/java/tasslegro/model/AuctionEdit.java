@@ -136,7 +136,7 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 			if (this.responseString == null) {
 			} else {
 				JSONObject objects = new JSONObject(this.responseString);
-				if (objects.getInt("user_ID") != (((MyUI) UI.getCurrent()).getUserId())) {
+				if (objects.getInt("userId") != (((MyUI) UI.getCurrent()).getUserId())) {
 					this.layout.addComponent(new Label("Wybierz aukcjię do edycji!"));
 					return;
 				}
@@ -150,7 +150,7 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 				this.auctionPrice.setValue(String.valueOf(objects.getDouble("price")));
 				this.layout.addComponent(this.auctionPrice);
 				try {
-					this.dateStart = DateUtils.parseDateStrictly(objects.getString("start_Date"),
+					this.dateStart = DateUtils.parseDateStrictly(objects.getString("startDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
 				} catch (JSONException e) {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
@@ -160,7 +160,7 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 				this.auctionDateStart = new Label("Wystawiono: " + this.dateFormat.format(this.dateStart));
 				this.layout.addComponent(this.auctionDateStart);
 				try {
-					this.dateEnd = DateUtils.parseDateStrictly(objects.getString("end_Date"),
+					this.dateEnd = DateUtils.parseDateStrictly(objects.getString("endDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
 				} catch (JSONException e) {
 					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());

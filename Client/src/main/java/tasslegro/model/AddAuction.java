@@ -101,23 +101,26 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 			this.panel.addComponent(this.buttonLoginUser);
 		}
 		this.layout.addComponent(this.panel);
-
-		this.imageLogo.setSource(ImageTasslegro.getImageSource());
-		this.layout.addComponent(this.imageLogo);
-		this.layout.addComponent(this.labelTitle);
-		this.layout.addComponent(this.auctionTitle);
-		this.layout.addComponent(this.labelDescription);
-		this.layout.addComponent(this.auctionDescription);
-		this.layout.addComponent(this.labelPrice);
-		this.layout.addComponent(this.auctionPrice);
-		this.layout.addComponent(this.labelImage);
-		this.uploadImage.setButtonCaption("Dodaj");
-		this.uploadImage.setImmediate(true);
-		this.layout.addComponent(this.uploadImage);
-		this.auctionButtonAdd.setIcon(FontAwesome.HAND_O_RIGHT);
-		this.auctionButtonAdd.addClickListener(this);
-		this.auctionButtonAdd.setIcon(FontAwesome.SEND);
-		this.layout.addComponent(this.auctionButtonAdd);
+		if (((MyUI) UI.getCurrent()).getLogged() == false) {
+			this.layout.addComponent(new Label("Zaloguj się!"));
+		} else {
+			this.imageLogo.setSource(ImageTasslegro.getImageSource());
+			this.layout.addComponent(this.imageLogo);
+			this.layout.addComponent(this.labelTitle);
+			this.layout.addComponent(this.auctionTitle);
+			this.layout.addComponent(this.labelDescription);
+			this.layout.addComponent(this.auctionDescription);
+			this.layout.addComponent(this.labelPrice);
+			this.layout.addComponent(this.auctionPrice);
+			this.layout.addComponent(this.labelImage);
+			this.uploadImage.setButtonCaption("Dodaj");
+			this.uploadImage.setImmediate(true);
+			this.layout.addComponent(this.uploadImage);
+			this.auctionButtonAdd.setIcon(FontAwesome.HAND_O_RIGHT);
+			this.auctionButtonAdd.addClickListener(this);
+			this.auctionButtonAdd.setIcon(FontAwesome.SEND);
+			this.layout.addComponent(this.auctionButtonAdd);
+		}
 	}
 
 	@Override
@@ -195,8 +198,8 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 		msg.put("title", auctionTitle.getValue());
 		msg.put("description", auctionDescription.getValue());
 		msg.put("price", auctionPrice.getValue());
-		msg.put("user_ID", userId);
-		msg.put("image_ID", imageId);
+		msg.put("userId", userId);
+		msg.put("imageId", imageId);
 		try {
 			Http_Post post = new Http_Post(this.httpPostURL, msg.toString());
 			if (post.getStatusCode() == 201) {

@@ -439,13 +439,13 @@ public class MySQL {
 				List<Auctions> AuctionList = new ArrayList<>();
 				while (this.ResultDB.next()) {
 					Auctions Auction = new Auctions();
-					Auction.setAuciton_ID(this.ResultDB.getInt("Auciton_ID"));
-					Auction.setUser_ID(this.ResultDB.getInt("User_ID"));
-					Auction.setImage_ID(this.ResultDB.getInt("Image_ID"));
+					Auction.setAucitonId(this.ResultDB.getInt("Auciton_ID"));
+					Auction.setUserId(this.ResultDB.getInt("User_ID"));
+					Auction.setImageId(this.ResultDB.getInt("Image_ID"));
 					Auction.setTitle(this.ResultDB.getString("Title"));
 					Auction.setDescription(this.ResultDB.getString("Description"));
-					Auction.setStart_Date(this.ResultDB.getString("Start_Date"));
-					Auction.setEnd_Date(this.ResultDB.getString("End_Date"));
+					Auction.setStartDate(this.ResultDB.getString("Start_Date"));
+					Auction.setEndDate(this.ResultDB.getString("End_Date"));
 					Auction.setPrice(this.ResultDB.getFloat("Price"));
 					AuctionList.add(Auction);
 				}
@@ -480,13 +480,13 @@ public class MySQL {
 				List<Auctions> AuctionList = new ArrayList<>();
 				while (this.ResultDB.next()) {
 					Auctions Auction = new Auctions();
-					Auction.setAuciton_ID(this.ResultDB.getInt("Auciton_ID"));
-					Auction.setUser_ID(this.ResultDB.getInt("User_ID"));
-					Auction.setImage_ID(this.ResultDB.getInt("Image_ID"));
+					Auction.setAucitonId(this.ResultDB.getInt("Auciton_ID"));
+					Auction.setUserId(this.ResultDB.getInt("User_ID"));
+					Auction.setImageId(this.ResultDB.getInt("Image_ID"));
 					Auction.setTitle(this.ResultDB.getString("Title"));
 					Auction.setDescription(this.ResultDB.getString("Description"));
-					Auction.setStart_Date(this.ResultDB.getString("Start_Date"));
-					Auction.setEnd_Date(this.ResultDB.getString("End_Date"));
+					Auction.setStartDate(this.ResultDB.getString("Start_Date"));
+					Auction.setEndDate(this.ResultDB.getString("End_Date"));
 					Auction.setPrice(this.ResultDB.getFloat("Price"));
 					AuctionList.add(Auction);
 				}
@@ -511,8 +511,8 @@ public class MySQL {
 				this.SQLQueryString = "INSERT INTO ONLINE_AUCTIONS.AUCTIONS(User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price) "
 						+ "VALUES (?, ?, ?, ?, NOW(), DATE_ADD(NOW(),INTERVAL 2 WEEK), ?)";
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
-				this.preparedStatement.setInt(1, auction.getUser_ID());
-				this.preparedStatement.setInt(2, auction.getImage_ID());
+				this.preparedStatement.setInt(1, auction.getUserId());
+				this.preparedStatement.setInt(2, auction.getImageId());
 				this.preparedStatement.setString(3, auction.getTitle());
 				this.preparedStatement.setString(4, auction.getDescription());
 				this.preparedStatement.setFloat(5, auction.getPrice());
@@ -521,7 +521,7 @@ public class MySQL {
 				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
 						+ " in connection: " + this.ConnectionDBAddres);
 				if (this.ResultDB.next()) {
-					auction.setAuciton_ID(this.ResultDB.getInt(1));
+					auction.setAucitonId(this.ResultDB.getInt(1));
 					this.ResultDB = null;
 					return auction;
 				} else {
@@ -546,7 +546,7 @@ public class MySQL {
 				this.preparedStatement.setString(1, auction.getTitle());
 				this.preparedStatement.setString(2, auction.getDescription());
 				this.preparedStatement.setFloat(3, auction.getPrice());
-				this.preparedStatement.setFloat(4, auction.getAuciton_ID());
+				this.preparedStatement.setFloat(4, auction.getAucitonId());
 				this.preparedStatement.executeUpdate();
 				this.ResultDBCount = this.preparedStatement.getUpdateCount();
 				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
@@ -580,13 +580,13 @@ public class MySQL {
 				this.ResultDB = this.preparedStatement.executeQuery();
 				Auctions tmp = new Auctions();
 				if (this.ResultDB.next()) {
-					tmp.setAuciton_ID(this.ResultDB.getInt("Auciton_ID"));
-					tmp.setUser_ID(this.ResultDB.getInt("User_ID"));
-					tmp.setImage_ID(this.ResultDB.getInt("Image_ID"));
+					tmp.setAucitonId(this.ResultDB.getInt("Auciton_ID"));
+					tmp.setUserId(this.ResultDB.getInt("User_ID"));
+					tmp.setImageId(this.ResultDB.getInt("Image_ID"));
 					tmp.setTitle(this.ResultDB.getString("Title"));
 					tmp.setDescription(this.ResultDB.getString("Description"));
-					tmp.setStart_Date(this.ResultDB.getString("Start_Date"));
-					tmp.setEnd_Date(this.ResultDB.getString("End_Date"));
+					tmp.setStartDate(this.ResultDB.getString("Start_Date"));
+					tmp.setEndDate(this.ResultDB.getString("End_Date"));
 					tmp.setPrice(this.ResultDB.getFloat("Price"));
 				} else {
 					System.out.println("[LOG] " + new Date() + ": Auction with id \"" + id + "\" not found!");
@@ -614,19 +614,19 @@ public class MySQL {
 				this.SQLQueryString = "SELECT Auciton_ID, User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price "
 						+ "FROM ONLINE_AUCTIONS.AUCTIONS WHERE User_ID = ? AND Title = ? AND Description = ?";
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
-				this.preparedStatement.setInt(1, auction.getUser_ID());
+				this.preparedStatement.setInt(1, auction.getUserId());
 				this.preparedStatement.setString(2, auction.getTitle());
 				this.preparedStatement.setString(3, auction.getDescription());
 				this.ResultDB = this.preparedStatement.executeQuery();
 				Auctions tmp = new Auctions();
 				if (this.ResultDB.next()) {
-					tmp.setAuciton_ID(this.ResultDB.getInt("Auciton_ID"));
-					tmp.setUser_ID(this.ResultDB.getInt("User_ID"));
-					tmp.setImage_ID(this.ResultDB.getInt("Image_ID"));
+					tmp.setAucitonId(this.ResultDB.getInt("Auciton_ID"));
+					tmp.setUserId(this.ResultDB.getInt("User_ID"));
+					tmp.setImageId(this.ResultDB.getInt("Image_ID"));
 					tmp.setTitle(this.ResultDB.getString("Title"));
 					tmp.setDescription(this.ResultDB.getString("Description"));
-					tmp.setStart_Date(this.ResultDB.getString("Start_Date"));
-					tmp.setEnd_Date(this.ResultDB.getString("End_Date"));
+					tmp.setStartDate(this.ResultDB.getString("Start_Date"));
+					tmp.setEndDate(this.ResultDB.getString("End_Date"));
 					tmp.setPrice(this.ResultDB.getFloat("Price"));
 				} else {
 					System.out.println(

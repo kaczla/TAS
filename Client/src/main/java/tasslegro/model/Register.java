@@ -107,33 +107,37 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 		}
 		this.layout.addComponent(this.panel);
 
-		this.imageLogo.setSource(ImageTasslegro.getImageSource());
-		this.layout.addComponent(this.imageLogo);
-		this.layout.addComponent(this.labelName);
-		this.layout.addComponent(this.name);
-		this.layout.addComponent(this.labelSurname);
-		this.layout.addComponent(this.surname);
-		this.layout.addComponent(this.labelEmail);
-		this.layout.addComponent(this.email);
-		this.layout.addComponent(this.labelPhone);
-		this.layout.addComponent(this.phone);
-		this.layout.addComponent(this.labelLogin);
-		this.login.setValidationVisible(true);
-		this.layout.addComponent(this.login);
-		this.layout.addComponent(this.labelPass);
-		this.layout.addComponent(this.pass);
-		this.layout.addComponent(this.labelPassrep);
-		this.layout.addComponent(this.passrep);
-		this.layout.addComponent(this.labelAddress);
-		this.layout.addComponent(this.address);
-		this.layout.addComponent(this.labelTown);
-		this.layout.addComponent(this.town);
-		this.layout.addComponent(this.labelZipCode);
-		this.layout.addComponent(this.zipCode);
-		this.layout.addComponent(require);
-		this.register.setIcon(FontAwesome.SEND);
-		this.register.addClickListener(this);
-		this.layout.addComponent(this.register);
+		if (((MyUI) UI.getCurrent()).getLogged() == true) {
+			this.layout.addComponent(new Label("Jesteś już zalogowany!"));
+		} else {
+			this.imageLogo.setSource(ImageTasslegro.getImageSource());
+			this.layout.addComponent(this.imageLogo);
+			this.layout.addComponent(this.labelName);
+			this.layout.addComponent(this.name);
+			this.layout.addComponent(this.labelSurname);
+			this.layout.addComponent(this.surname);
+			this.layout.addComponent(this.labelEmail);
+			this.layout.addComponent(this.email);
+			this.layout.addComponent(this.labelPhone);
+			this.layout.addComponent(this.phone);
+			this.layout.addComponent(this.labelLogin);
+			this.login.setValidationVisible(true);
+			this.layout.addComponent(this.login);
+			this.layout.addComponent(this.labelPass);
+			this.layout.addComponent(this.pass);
+			this.layout.addComponent(this.labelPassrep);
+			this.layout.addComponent(this.passrep);
+			this.layout.addComponent(this.labelAddress);
+			this.layout.addComponent(this.address);
+			this.layout.addComponent(this.labelTown);
+			this.layout.addComponent(this.town);
+			this.layout.addComponent(this.labelZipCode);
+			this.layout.addComponent(this.zipCode);
+			this.layout.addComponent(require);
+			this.register.setIcon(FontAwesome.SEND);
+			this.register.addClickListener(this);
+			this.layout.addComponent(this.register);
+		}
 	}
 
 	@Override
