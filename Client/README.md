@@ -48,6 +48,6 @@ Upewnij się że <b>Serwer WWW</b> jest uruchomiony.
 </br>
 Budowanie całej aplikacji klienckiej może zająć kilka minut.
 </br>
-Aby zmienić <b>adres docelowy serwera</b> należy edytować pole <b>serverURL</b> w klasie <b>BaseInformation</b> ([src/main/java/tasslegro/base/BaseInformation.java](src/main/java/tasslegro/base/BaseInformation.java)).
+Aby zmienić <b>adres docelowy serwera</b> należy edytować pole <b>serverURL</b> w klasie <b>BaseInformation</b> ([BaseInformation.java](src/main/java/tasslegro/base/BaseInformation.java)).
 </br>
 </br>
