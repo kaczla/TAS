@@ -94,7 +94,7 @@ public class ImagesResource {
 	@Path("/{id}")
 	@GET
 	@ApiOperation(value = "Get image with {id}.")
-	public Response getImage(@PathParam("id") final String id) throws ClassNotFoundException, SQLException {
+	public Response getImage(@PathParam("id") final int id) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
 		cacheControl.setPrivate(false);
@@ -116,16 +116,15 @@ public class ImagesResource {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Delete image with {id}.")
-	public Response DeleteImage(@PathParam("id") final String id) throws SQLException {
+	public Response DeleteImage(@PathParam("id") final int id) throws SQLException {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Problem with server! Please try again later!\n").build();
 		}
-		int idInt = Integer.parseInt(id);
-		if (idInt <= 0) {
+		if (id <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("ID is required!\n").build();
-		} else if (!this.database.checkExistImageById(idInt)) {
-			return Response.status(Response.Status.CONFLICT).entity("Image with id \"" + idInt + "\" not found!!\n")
+		} else if (!this.database.checkExistImageById(id)) {
+			return Response.status(Response.Status.CONFLICT).entity("Image with id \"" + id + "\" not found!!\n")
 					.build();
 		} else {
 			Images tmp = this.database.deleteImageById(id);

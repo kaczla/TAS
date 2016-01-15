@@ -110,11 +110,9 @@ public class AuctionsResource {
 		} else {
 			Auctions tmp = this.database.updateAuction(auction);
 			if (tmp == null) {
-				System.out.println("NULL");
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 						.entity("Problem with server! Please try again later!\n").build();
 			} else {
-				System.out.println("ADD");
 				return Response.status(Response.Status.CREATED).entity(tmp).build();
 			}
 		}
