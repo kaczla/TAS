@@ -167,7 +167,7 @@ public class AllAuctions extends CustomComponent implements View {
 			}
 		}
 
-		this.table.setHeight("400px");
+		this.table.setHeight("100%");
 		this.table.setWidth("95%");
 		this.table.setColumnCollapsingAllowed(true);
 		this.layout.addComponent(this.table);

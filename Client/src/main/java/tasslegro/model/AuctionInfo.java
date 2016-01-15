@@ -130,7 +130,7 @@ public class AuctionInfo extends CustomComponent implements View {
 			if (this.responseString == null) {
 			} else {
 				JSONObject objects = new JSONObject(this.responseString);
-				this.auctionTitle = new Label(objects.getString("title"));
+				this.auctionTitle = new Label("Tytuł: " + objects.getString("title"));
 				this.layout.addComponent(this.auctionTitle);
 				this.auctionPrice = new Label("Cena: " + String.valueOf(objects.getDouble("price")) + " zł");
 				this.layout.addComponent(this.auctionPrice);

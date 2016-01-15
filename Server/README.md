@@ -44,4 +44,8 @@ Upewnij się że usługa <b>mysql</b> jest uruchomiona.
 </br>
 Upewnij się że baza danych została poprawnie utworzona.
 </br>
+Aby zmienić <b>adres docelowy bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>ConnectionDBAddres</b> w klasie <b>MySQL</b> ([MySQL.java](Server/src/main/java/tasslegro/rest/MySQL/MySQL.java))
+</br>
+Aby zmienić <b>login i hasło do bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>UserName</b> i <b>UserPassword</b> w klasie <b>MySQL</b> ([MySQL.java](Server/src/main/java/tasslegro/rest/MySQL/MySQL.java))
+</br>
 </br>

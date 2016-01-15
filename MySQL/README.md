@@ -38,8 +38,16 @@ b. Skompilować plik <b>MySQL.java</b> po czym uruchomić
 
 Upewnij się że usługa <b>mysql</b> jest uruchomiona.
 </br>
-Aby zmienić <b>adres docelowy bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>ConnectionDBAddres</b> w klasie <b>MySQL</b> ([src/MySQL/MySQL.java](src/MySQL/MySQL.java))
+Aby zmienić <b>adres docelowy bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>ConnectionDBAddres</b> w klasie <b>MySQL</b> ([MySQL.java](src/MySQL/MySQL.java))
 </br>
-Aby zmienić <b>login i hasło do bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>UserName</b> i <b>UserPassword</b> w klasie <b>MySQL</b> ([src/MySQL/MySQL.java](src/MySQL/MySQL.java))
+Aby zmienić <b>login i hasło do bazy danych</b> dla sposobu <b>B</b> należy edytować pole <b>UserName</b> i <b>UserPassword</b> w klasie <b>MySQL</b> ([MySQL.java](src/MySQL/MySQL.java))
+</br>
+Jeżeli występują problemy ze znakami UTF-8 to należy dodać do pliku <b>/etc/mysql/mysql.conf.d/</b>:
+`[mysqld]
+character-set-server=utf8
+collation-server=utf8_general_ci
+init-connect='SET NAMES utf8'
+[client]
+default-character-set=utf8`
 </br>
 </br>
