@@ -1,8 +1,11 @@
 package tasslegro.model;
 
+import javax.servlet.http.Cookie;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -52,6 +55,25 @@ public class LogoutUser extends CustomComponent implements View {
 		((MyUI) UI.getCurrent()).setUserLogin(null);
 		((MyUI) UI.getCurrent()).setUserPass(null);
 		((MyUI) UI.getCurrent()).setUserId(-1);
+
+		{
+			Cookie newCookie = new Cookie("userLogin", "");
+			newCookie.setComment("userLogin user");
+			newCookie.setMaxAge(0);
+			newCookie.setPath("/");
+			VaadinService.getCurrentResponse().addCookie(newCookie);
+			newCookie = new Cookie("userPass", "");
+			newCookie.setComment("pass user");
+			newCookie.setMaxAge(0);
+			newCookie.setPath("/");
+			VaadinService.getCurrentResponse().addCookie(newCookie);
+			newCookie = new Cookie("userId", "");
+			newCookie.setComment("id user");
+			newCookie.setMaxAge(0);
+			newCookie.setPath("/");
+			VaadinService.getCurrentResponse().addCookie(newCookie);
+		}
+
 		getUI().getNavigator().navigateTo(MyUI.MAIN);
 	}
 

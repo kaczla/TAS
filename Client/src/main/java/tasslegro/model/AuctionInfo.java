@@ -69,6 +69,12 @@ public class AuctionInfo extends CustomComponent implements View {
 	Label auctionDateStart = null;
 	Label auctionDateEnd = null;
 	Image auctionImage = new Image();
+	Button auctionEdit = new Button("Edytuj", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.AUCTION_EDIT);
+		}
+	});
 
 	public AuctionInfo() {
 	}
@@ -165,6 +171,11 @@ public class AuctionInfo extends CustomComponent implements View {
 				}
 				this.auctionDateEnd = new Label("Koniec: " + this.dateFormat.format(this.dateEnd));
 				this.layout.addComponent(this.auctionDateEnd);
+				if (((MyUI) UI.getCurrent()).getLogged()) {
+					if (((MyUI) UI.getCurrent()).getUserId() == objects.getInt("userId")) {
+						this.layout.addComponent(this.auctionEdit);
+					}
+				}
 			}
 		}
 

@@ -158,10 +158,18 @@ public class AllAuctions extends CustomComponent implements View {
 					}
 				});
 				tmpButton.setDescription("Kliknij po więcej!");
+				String auctionTitleTmp = objects.getString("title");
+				if (auctionTitleTmp.length() > 20) {
+					auctionTitleTmp = auctionTitleTmp.substring(0, 20) + "...";
+				}
+				String auctionDesctiprionTmp = objects.getString("description");
+				if (auctionDesctiprionTmp.length() > 20) {
+					auctionDesctiprionTmp = auctionDesctiprionTmp.substring(0, 20) + "...";
+				}
 
 				this.table
 						.addItem(
-								new Object[] { tmpImage, objects.getString("title"), objects.getString("description"),
+								new Object[] { tmpImage, auctionTitleTmp, auctionDesctiprionTmp,
 										objects.getDouble("price"), this.dateFormat.format(this.date), tmpButton },
 								counter++);
 			}

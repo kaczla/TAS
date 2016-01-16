@@ -1,12 +1,14 @@
 package tasslegro;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
@@ -46,6 +48,7 @@ public class MyUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
+		this.loadCookies();
 		getPage().setTitle("Tasslegro");
 		this.navigator = new Navigator(this, this);
 		this.navigator.addView(MyUI.MAIN, new MainSite());
@@ -58,6 +61,22 @@ public class MyUI extends UI {
 		this.navigator.addView(MyUI.LOGIN_USER, new LoginUser());
 		this.navigator.addView(MyUI.LOGOUT_USER, new LogoutUser());
 		this.navigator.navigateTo(MyUI.MAIN);
+	}
+
+	void loadCookies() {
+		Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+		for (Cookie cookie : cookies) {
+			if ("userLogin".equals(cookie.getName()) && cookie.getValue().isEmpty() == false) {
+				this.userLogin = cookie.getValue();
+			} else if ("userPass".equals(cookie.getName()) && cookie.getValue().isEmpty() == false) {
+				this.userPass = cookie.getValue();
+			} else if ("userId".equals(cookie.getName()) && cookie.getValue().isEmpty() == false) {
+				this.userId = Integer.parseInt(cookie.getValue());
+			}
+		}
+		if (this.userId > 0 && this.userLogin.isEmpty() == false && this.userPass.isEmpty() == false) {
+			this.logged = true;
+		}
 	}
 
 	public String getIdAuction() {

@@ -3,12 +3,15 @@ package tasslegro.model;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
+
 import org.json.JSONObject;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -34,6 +37,12 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 		@Override
 		public void buttonClick(ClickEvent event) {
 			getUI().getNavigator().navigateTo(MyUI.MAIN);
+		}
+	});
+	Button buttonUserAdd = new Button("Zarejestruj się", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.REGISTER);
 		}
 	});
 	Image imageLogo = new Image();
@@ -79,6 +88,7 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 		this.buttonSend.setIcon(FontAwesome.LOCK);
 		this.buttonSend.addClickListener(this);
 		this.layout.addComponent(this.buttonSend);
+		this.layout.addComponent(this.buttonUserAdd);
 	}
 
 	@Override
@@ -158,6 +168,25 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 			((MyUI) UI.getCurrent()).setUserLogin(this.login.getValue());
 			((MyUI) UI.getCurrent()).setUserPass(this.pass.getValue());
 			((MyUI) UI.getCurrent()).setUserId(objects.getInt("id"));
+
+			{
+				Cookie newCookie = new Cookie("userLogin", this.login.getValue());
+				newCookie.setComment("userLogin user");
+				newCookie.setMaxAge(-1);
+				newCookie.setPath("/");
+				VaadinService.getCurrentResponse().addCookie(newCookie);
+				newCookie = new Cookie("userPass", this.pass.getValue());
+				newCookie.setComment("pass user");
+				newCookie.setMaxAge(-1);
+				newCookie.setPath("/");
+				VaadinService.getCurrentResponse().addCookie(newCookie);
+				newCookie = new Cookie("userId", String.valueOf(objects.getInt("id")));
+				newCookie.setComment("id user");
+				newCookie.setMaxAge(-1);
+				newCookie.setPath("/");
+				VaadinService.getCurrentResponse().addCookie(newCookie);
+			}
+
 			getUI().getNavigator().navigateTo(MyUI.MAIN);
 		}
 	}
