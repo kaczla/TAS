@@ -35,6 +35,7 @@ import tasslegro.base.ImageTasslegro;
 public class AllAuctions extends CustomComponent implements View {
 	VerticalLayout layout = new VerticalLayout();
 	HorizontalLayout panel = new HorizontalLayout();
+	HorizontalLayout panelPage = new HorizontalLayout();
 	Button buttonMainSite = new Button("Strona główna", new Button.ClickListener() {
 		@Override
 		public void buttonClick(ClickEvent event) {
@@ -53,17 +54,51 @@ public class AllAuctions extends CustomComponent implements View {
 			getUI().getNavigator().navigateTo(MyUI.LOGOUT_USER);
 		}
 	});
+	Button buttonUserProfil = new Button("Profil", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.USER_PROFIL);
+		}
+	});
 	Label labelNoLogged = new Label("Nie zalogowany!");
 	Label labelLogged = new Label();
 	Notification notification = null;
 	String responseString = null;
 	Table table = new Table("Aukcje:");
 	Image imageLogo = new Image();
-	String httpGetURL = BaseInformation.serverURL + "auctions/pages/1";
+	String httpGetURL = BaseInformation.serverURL + "auctions/pages/";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	Date date = null;
+	Button buttoncurrentPage = new Button("0", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			auctionPage = 1;
+			((MyUI) UI.getCurrent()).setAuctionPage(auctionPage);
+			getUI().getNavigator().navigateTo(MyUI.AUCTION);
+		}
+	});
+	Button buttonPreviousPage = new Button("Poprzednia strona", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			--auctionPage;
+			if (auctionPage < 1) {
+				auctionPage = 1;
+			}
+			((MyUI) UI.getCurrent()).setAuctionPage(auctionPage);
+			getUI().getNavigator().navigateTo(MyUI.AUCTION);
+		}
+	});
+	Button buttonNextPage = new Button("Następna strona", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			auctionPage++;
+			((MyUI) UI.getCurrent()).setAuctionPage(auctionPage);
+			getUI().getNavigator().navigateTo(MyUI.AUCTION);
+		}
+	});
 
 	String tmpString = null;
+	int auctionPage = 1;
 
 	public AllAuctions() {
 	}
@@ -81,8 +116,10 @@ public class AllAuctions extends CustomComponent implements View {
 		this.buttonMainSite.setIcon(FontAwesome.HOME);
 		this.panel.addComponent(this.buttonMainSite);
 		if (((MyUI) UI.getCurrent()).getLogged()) {
-			this.labelLogged = new Label("Zalogowany jako: " + ((MyUI) UI.getCurrent()).getUserLogin());
+			this.labelLogged = new Label("Zalogowany jako:");
 			this.panel.addComponent(this.labelLogged);
+			this.buttonUserProfil.setCaption(((MyUI) UI.getCurrent()).getUserLogin());
+			this.panel.addComponent(this.buttonUserProfil);
 			this.buttonLogoutUser.setIcon(FontAwesome.LOCK);
 			this.panel.addComponent(this.buttonLogoutUser);
 		} else {
@@ -95,8 +132,14 @@ public class AllAuctions extends CustomComponent implements View {
 		this.imageLogo.setSource(ImageTasslegro.getImageSource());
 		this.layout.addComponent(this.imageLogo);
 
+		this.auctionPage = ((MyUI) UI.getCurrent()).getAuctionPage();
+		if (this.auctionPage < 1) {
+			this.auctionPage = 1;
+			((MyUI) UI.getCurrent()).setAuctionPage(this.auctionPage);
+		}
+
 		try {
-			Http_Get get = new Http_Get(this.httpGetURL);
+			Http_Get get = new Http_Get(this.httpGetURL + this.auctionPage);
 			this.responseString = get.getStrinResponse();
 			if (get.getStatusCode() == 200) {
 			} else {
@@ -113,6 +156,7 @@ public class AllAuctions extends CustomComponent implements View {
 			this.responseString = null;
 		}
 
+		this.table = new Table();
 		this.table.addContainerProperty("Grafika", Image.class, null);
 		this.table.addContainerProperty("Tytuł", String.class, null);
 		this.table.addContainerProperty("Opis", String.class, null);
@@ -150,7 +194,7 @@ public class AllAuctions extends CustomComponent implements View {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						((MyUI) UI.getCurrent()).setIdAuction(id);
+						((MyUI) UI.getCurrent()).setAuctionId(id);
 						getUI().getNavigator().navigateTo(MyUI.AUCTION_INFO);
 					}
 				});
@@ -172,9 +216,23 @@ public class AllAuctions extends CustomComponent implements View {
 			}
 		}
 
+		this.panelPage = new HorizontalLayout();
+		this.panelPage.setSpacing(true);
+		this.panelPage.addComponent(this.buttonPreviousPage);
+		this.buttoncurrentPage.setCaption(String.valueOf(this.auctionPage));
+		this.panelPage.addComponent(this.buttoncurrentPage);
+		this.panelPage.addComponent(this.buttonNextPage);
+		this.layout.addComponent(this.panelPage);
 		this.table.setHeight("100%");
 		this.table.setWidth("95%");
 		this.table.setColumnCollapsingAllowed(true);
 		this.layout.addComponent(this.table);
+		if (this.table.size() < 1) {
+			this.notification = new Notification("Error!", "Brak danych!\nWróć do poprzedniej strony!",
+					Notification.Type.ERROR_MESSAGE);
+			this.notification.setDelayMsec(5000);
+			this.notification.show(Page.getCurrent());
+			this.responseString = null;
+		}
 	}
 }

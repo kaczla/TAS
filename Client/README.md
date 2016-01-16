@@ -48,6 +48,8 @@ Upewnij się że <b>Serwer WWW</b> jest uruchomiony.
 </br>
 Budowanie całej aplikacji klienckiej może zająć kilka minut.
 </br>
+Aby zmienić <b>adres klienta</b> należy edytować plik <b>pom.xml</b> w polach <b>host</b> oraz <b>port</b> w <b>build/plugin/configuration/httpConnector</b> ([pom.xml](pom.xml))
+</br>
 Aby zmienić <b>adres docelowy serwera</b> należy edytować pole <b>serverURL</b> w klasie <b>BaseInformation</b> ([BaseInformation.java](src/main/java/tasslegro/base/BaseInformation.java)).
 </br>
 </br>

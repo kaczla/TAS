@@ -120,8 +120,36 @@ public class AuctionsResource {
 
 	@DELETE
 	@ApiOperation(value = "Delete auction.")
-	public Response deleteAuction(Auctions auction) {
-		return Response.status(Response.Status.NOT_IMPLEMENTED).entity("DELETE IS NOT IMPLEMENTED!").build();
+	public Response deleteAuction(AuctionsAuth auction) {
+		if (!this.database.IsConnected()) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Problem with server! Please try again later!\n").build();
+		}
+		if (auction.getAucitonId() <= 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Auction ID is required!\n").build();
+		} else if (auction.getUserId() <= 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User ID is required!\n").build();
+		} else if (auction.getImageId() < 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Image ID is required!\n").build();
+		} else if (this.database.checkExistUserById(auction.getUserId()) == false) {
+			return Response.status(Response.Status.CONFLICT)
+					.entity("User with id \"" + auction.getUserId() + "\" not found!\n").build();
+		} else if (this.database.checkAuthorization(auction.getLogin(), auction.getPass()) == false) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("NOT_FOUND").build();
+		} else if (this.database.checkExistAuctionByIds(auction.getAucitonId(), auction.getUserId()) == false) {
+			return Response.status(Response.Status.CONFLICT).entity("Wrong data!\n").build();
+		} else {
+			if (auction.getImageId() > 0) {
+				this.database.deleteImageById(auction.getImageId());
+			}
+			Auctions tmp = this.database.deleteAuctionById(auction);
+			if (tmp == null) {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("Problem with server! Please try again later!\n").build();
+			} else {
+				return Response.status(Response.Status.CREATED).entity(tmp).build();
+			}
+		}
 	}
 
 	@Path("/{id}")

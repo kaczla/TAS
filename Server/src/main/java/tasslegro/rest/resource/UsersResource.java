@@ -99,7 +99,28 @@ public class UsersResource {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 						.entity("Problem with server! Please try again later!\n").build();
 			}
-			return null;
+			if (user.getEmail().isEmpty()) {
+				return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Email is required!\n").build();
+			} else if (user.getLogin().isEmpty()) {
+				return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Login is required!\n").build();
+			} else if (user.getPass().isEmpty()) {
+				return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Password is required!\n").build();
+			} else if (this.database.checkExistUserByLogin(user.getLogin()) == false) {
+				return Response.status(Response.Status.CONFLICT)
+						.entity("User with login \"" + user.getLogin() + "\" exists!\n").build();
+			} else if (this.database.checkExistUserByEmail(user.getEmail())
+					&& this.database.checkExistUserByLoginEmail(user.getLogin(), user.getEmail()) == false) {
+				return Response.status(Response.Status.CONFLICT)
+						.entity("User with email \"" + user.getEmail() + "\" exists!\n").build();
+			} else {
+				Users tmp = this.database.updateUser(user);
+				if (tmp == null) {
+					return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+							.entity("Problem with server! Please try again later!\n").build();
+				} else {
+					return Response.status(Response.Status.CREATED).entity(tmp).build();
+				}
+			}
 		}
 	}
 

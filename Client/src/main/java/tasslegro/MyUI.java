@@ -12,6 +12,7 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
+import tasslegro.base.UserEdit;
 import tasslegro.model.AddAuction;
 import tasslegro.model.AllAuctions;
 import tasslegro.model.AllUsers;
@@ -21,6 +22,7 @@ import tasslegro.model.LoginUser;
 import tasslegro.model.LogoutUser;
 import tasslegro.model.MainSite;
 import tasslegro.model.Register;
+import tasslegro.model.UserProfil;
 
 @Theme("mytheme")
 @Widgetset("tasslegro.MyAppWidgetset")
@@ -29,6 +31,8 @@ public class MyUI extends UI {
 
 	public static final String MAIN = "main";
 	public static final String USER = "users";
+	public static final String USER_PROFIL = "user_profil";
+	public static final String USER_EDIT = "user_edit";
 	public static final String REGISTER = "register";
 	public static final String AUCTION_ADD = "auction_add";
 	public static final String AUCTION = "auctions";
@@ -37,11 +41,12 @@ public class MyUI extends UI {
 	public static final String LOGIN_USER = "login_user";
 	public static final String LOGOUT_USER = "logout_user";
 
-	String idAuction = null;
+	String auctionId = null;
 	int userId = -1;
 	String userLogin = null;
 	String userPass = null;
 	Boolean logged = false;
+	int auctionPage = 1;
 
 	public MyUI() {
 	}
@@ -54,6 +59,8 @@ public class MyUI extends UI {
 		this.navigator.addView(MyUI.MAIN, new MainSite());
 		this.navigator.addView(MyUI.REGISTER, new Register());
 		this.navigator.addView(MyUI.USER, new AllUsers());
+		this.navigator.addView(MyUI.USER_PROFIL, new UserProfil());
+		this.navigator.addView(MyUI.USER_EDIT, new UserEdit());
 		this.navigator.addView(MyUI.AUCTION_ADD, new AddAuction());
 		this.navigator.addView(MyUI.AUCTION, new AllAuctions());
 		this.navigator.addView(MyUI.AUCTION_INFO, new AuctionInfo());
@@ -79,12 +86,12 @@ public class MyUI extends UI {
 		}
 	}
 
-	public String getIdAuction() {
-		return this.idAuction;
+	public String getAuctionId() {
+		return this.auctionId;
 	}
 
-	public void setIdAuction(String idAuction) {
-		this.idAuction = idAuction;
+	public void setAuctionId(String idAuction) {
+		this.auctionId = idAuction;
 	}
 
 	public int getUserId() {
@@ -117,6 +124,14 @@ public class MyUI extends UI {
 
 	public void setLogged(Boolean logged) {
 		this.logged = logged;
+	}
+
+	public int getAuctionPage() {
+		return this.auctionPage;
+	}
+
+	public void setAuctionPage(int auctionPage) {
+		this.auctionPage = auctionPage;
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)

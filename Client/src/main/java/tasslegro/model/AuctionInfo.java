@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +27,12 @@ import com.vaadin.ui.VerticalLayout;
 
 import tasslegro.MyUI;
 import tasslegro.base.BaseInformation;
+import tasslegro.base.Http_Delete;
 import tasslegro.base.Http_Get;
 import tasslegro.base.ImageNoImage;
 import tasslegro.base.ImageTasslegro;
 
-public class AuctionInfo extends CustomComponent implements View {
+public class AuctionInfo extends CustomComponent implements View, Button.ClickListener {
 	VerticalLayout layout = new VerticalLayout();
 	HorizontalLayout panel = new HorizontalLayout();
 	Button buttonMainSite = new Button("Strona główna", new Button.ClickListener() {
@@ -51,6 +53,12 @@ public class AuctionInfo extends CustomComponent implements View {
 			getUI().getNavigator().navigateTo(MyUI.LOGOUT_USER);
 		}
 	});
+	Button buttonUserProfil = new Button("Profil", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.USER_PROFIL);
+		}
+	});
 	Label labelNoLogged = new Label("Nie zalogowany!");
 	Label labelLogged = new Label();
 	Image imageLogo = new Image();
@@ -58,11 +66,16 @@ public class AuctionInfo extends CustomComponent implements View {
 	Notification notification = null;
 	String responseString = null;
 	String httpGetURL = BaseInformation.serverURL + "auctions/";
+	String httpDeleteURL = BaseInformation.serverURL + "auctions/";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	Date dateStart = null;
 	Date dateEnd = null;
 
-	String idAuction = null;
+	String auctionId = null;
+	int auctionImageId;
+	String auctionTitleString = null;
+	String auctionDescriptionString = null;
+	double auctionPriceDouble;
 	Label auctionTitle = null;
 	Label auctionDescription = null;
 	Label auctionPrice = null;
@@ -75,6 +88,7 @@ public class AuctionInfo extends CustomComponent implements View {
 			getUI().getNavigator().navigateTo(MyUI.AUCTION_EDIT);
 		}
 	});
+	Button auctionDelete = new Button("Usuń aukcjię");
 
 	public AuctionInfo() {
 	}
@@ -92,8 +106,10 @@ public class AuctionInfo extends CustomComponent implements View {
 		this.buttonMainSite.setIcon(FontAwesome.HOME);
 		this.panel.addComponent(this.buttonMainSite);
 		if (((MyUI) UI.getCurrent()).getLogged()) {
-			this.labelLogged = new Label("Zalogowany jako: " + ((MyUI) UI.getCurrent()).getUserLogin());
+			this.labelLogged = new Label("Zalogowany jako:");
 			this.panel.addComponent(this.labelLogged);
+			this.buttonUserProfil.setCaption(((MyUI) UI.getCurrent()).getUserLogin());
+			this.panel.addComponent(this.buttonUserProfil);
 			this.buttonLogoutUser.setIcon(FontAwesome.LOCK);
 			this.panel.addComponent(this.buttonLogoutUser);
 		} else {
@@ -106,12 +122,12 @@ public class AuctionInfo extends CustomComponent implements View {
 		this.imageLogo.setSource(ImageTasslegro.getImageSource());
 		this.layout.addComponent(this.imageLogo);
 
-		this.idAuction = ((MyUI) UI.getCurrent()).getIdAuction();
-		if (this.idAuction == null) {
+		this.auctionId = ((MyUI) UI.getCurrent()).getAuctionId();
+		if (this.auctionId == null) {
 			this.layout.addComponent(new Label("Nie wybrano aukcji!"));
 		} else {
 			try {
-				Http_Get get = new Http_Get(this.httpGetURL + this.idAuction);
+				Http_Get get = new Http_Get(this.httpGetURL + this.auctionId);
 				this.responseString = get.getStrinResponse();
 				if (get.getStatusCode() == 200) {
 				} else {
@@ -133,20 +149,25 @@ public class AuctionInfo extends CustomComponent implements View {
 			if (this.responseString == null) {
 			} else {
 				JSONObject objects = new JSONObject(this.responseString);
-				this.auctionTitle = new Label("Tytuł: " + objects.getString("title"));
+				this.auctionTitleString = objects.getString("title");
+				this.auctionDescriptionString = objects.getString("description");
+				this.auctionPriceDouble = objects.getDouble("price");
+				this.auctionTitle = new Label("Tytuł: " + this.auctionTitleString);
 				this.layout.addComponent(this.auctionTitle);
-				this.auctionPrice = new Label("Cena: " + String.valueOf(objects.getDouble("price")) + " zł");
+				this.auctionPrice = new Label("Cena: " + String.valueOf(this.auctionPriceDouble) + " zł");
 				this.layout.addComponent(this.auctionPrice);
 				if (objects.getInt("imageId") > 0) {
+					this.auctionImageId = objects.getInt("imageId");
 					this.auctionImage.setSource(new ExternalResource(
-							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("imageId"))));
+							BaseInformation.serverURL + "images/" + String.valueOf(this.auctionImageId)));
 				} else {
 					this.auctionImage.setSource(ImageNoImage.getImageSource());
+					this.auctionImageId = 0;
 				}
 				this.auctionImage.setWidth("250px");
 				this.auctionImage.setHeight("250px");
 				this.layout.addComponent(this.auctionImage);
-				this.auctionDescription = new Label("Opis: " + objects.getString("description"));
+				this.auctionDescription = new Label("Opis: " + this.auctionDescriptionString);
 				this.layout.addComponent(this.auctionDescription);
 				try {
 					this.dateStart = DateUtils.parseDateStrictly(objects.getString("startDate"),
@@ -171,11 +192,43 @@ public class AuctionInfo extends CustomComponent implements View {
 				if (((MyUI) UI.getCurrent()).getLogged()) {
 					if (((MyUI) UI.getCurrent()).getUserId() == objects.getInt("userId")) {
 						this.layout.addComponent(this.auctionEdit);
+						this.auctionDelete.addClickListener(this);
+						this.layout.addComponent(this.auctionDelete);
 					}
 				}
 			}
 		}
+	}
 
+	@Override
+	public void buttonClick(ClickEvent event) {
+		JSONObject msg = new JSONObject();
+		msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
+		msg.put("pass", (((MyUI) UI.getCurrent()).getUserPass()));
+		msg.put("userId", (((MyUI) UI.getCurrent()).getUserId()));
+		msg.put("aucitonId", NumberUtils.toInt(this.auctionId));
+		msg.put("imageId", this.auctionImageId);
+		try {
+			Http_Delete delete = new Http_Delete(this.httpDeleteURL, msg.toString());
+			responseString = delete.getStrinResponse();
+			if (delete.getStatusCode() == 201) {
+				this.notification = new Notification("OK", "Pomyślnie usunięto aukcjię!",
+						Notification.Type.WARNING_MESSAGE);
+				this.notification.setDelayMsec(5000);
+				this.notification.show(Page.getCurrent());
+				((MyUI) UI.getCurrent()).setAuctionId(null);
+				getUI().getNavigator().navigateTo(MyUI.MAIN);
+			} else {
+				this.notification = new Notification("Error!", responseString, Notification.Type.ERROR_MESSAGE);
+				this.notification.setDelayMsec(5000);
+				this.notification.show(Page.getCurrent());
+			}
+		} catch (IOException e) {
+			System.err.println("-[ERROR] " + new Date() + ": " + e.getMessage());
+			this.notification = new Notification("Error!", "Problem z połączeniem!", Notification.Type.ERROR_MESSAGE);
+			this.notification.setDelayMsec(5000);
+			this.notification.show(Page.getCurrent());
+		}
 	}
 
 }

@@ -47,6 +47,12 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 			getUI().getNavigator().navigateTo(MyUI.LOGOUT_USER);
 		}
 	});
+	Button buttonUserProfil = new Button("Profil", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.USER_PROFIL);
+		}
+	});
 	Label labelNoLogged = new Label("Nie zalogowany!");
 	Label labelLogged = new Label();
 	Image imageLogo = new Image();
@@ -69,7 +75,7 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 	Label labelPhone = new Label("Telefon");
 	Label labelLogin = new Label("Login:*");
 	Label labelPass = new Label("Hasło:*");
-	Label labelPassrep = new Label("Powtórz Haslo:*");
+	Label labelPassrep = new Label("Powtórz Hasło:*");
 	Label labelAccount = new Label("Numer Konta:");
 	Label labelAddress = new Label("Adres:");
 	Label labelTown = new Label("Miasto:");
@@ -96,8 +102,10 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 		this.buttonMainSite.setIcon(FontAwesome.HOME);
 		this.panel.addComponent(this.buttonMainSite);
 		if (((MyUI) UI.getCurrent()).getLogged()) {
-			this.labelLogged = new Label("Zalogowany jako: " + ((MyUI) UI.getCurrent()).getUserLogin());
+			this.labelLogged = new Label("Zalogowany jako:");
 			this.panel.addComponent(this.labelLogged);
+			this.buttonUserProfil.setCaption(((MyUI) UI.getCurrent()).getUserLogin());
+			this.panel.addComponent(this.buttonUserProfil);
 			this.buttonLogoutUser.setIcon(FontAwesome.LOCK);
 			this.panel.addComponent(this.buttonLogoutUser);
 		} else {
@@ -182,8 +190,16 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 		msg.put("address", address.getValue());
 		msg.put("town", town.getValue());
 		msg.put("zipCode", zipCode.getValue());
-		msg.put("phone", phone.getValue());
-		msg.put("account", account.getValue());
+		if (this.phone.isEmpty()) {
+			msg.put("phone", 0);
+		} else {
+			msg.put("phone", this.phone.getValue());
+		}
+		if (this.account.isEmpty()) {
+			msg.put("account", 0);
+		} else {
+			msg.put("account", this.account.getValue());
+		}
 		try {
 			Http_Post post = new Http_Post(this.httpPostURL, msg.toString());
 			if (post.getStatusCode() == 201) {

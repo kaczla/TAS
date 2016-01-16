@@ -72,6 +72,12 @@ public class MainSite extends CustomComponent implements View {
 			getUI().getNavigator().navigateTo(MyUI.LOGOUT_USER);
 		}
 	});
+	Button buttonUserProfil = new Button("Profil", new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MyUI.USER_PROFIL);
+		}
+	});
 	Label labelNoLogged = new Label("Nie zalogowany!");
 	Label labelLogged = new Label();
 	Image imageLogo = new Image();
@@ -92,8 +98,10 @@ public class MainSite extends CustomComponent implements View {
 		this.buttonMainSite.setIcon(FontAwesome.HOME);
 		this.panel.addComponent(this.buttonMainSite);
 		if (((MyUI) UI.getCurrent()).getLogged()) {
-			this.labelLogged = new Label("Zalogowany jako: " + ((MyUI) UI.getCurrent()).getUserLogin());
+			this.labelLogged = new Label("Zalogowany jako:");
 			this.panel.addComponent(this.labelLogged);
+			this.buttonUserProfil.setCaption(((MyUI) UI.getCurrent()).getUserLogin());
+			this.panel.addComponent(this.buttonUserProfil);
 			this.buttonLogoutUser.setIcon(FontAwesome.LOCK);
 			this.panel.addComponent(this.buttonLogoutUser);
 		} else {

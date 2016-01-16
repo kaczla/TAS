@@ -330,6 +330,34 @@ public class MySQL {
 		return false;
 	}
 
+	public boolean checkExistUserByLoginEmail(String login, String email) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "SELECT User_ID FROM ONLINE_AUCTIONS.USERS_VIEW WHERE Login = ? AND Email = ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setString(1, login);
+				this.preparedStatement.setString(2, email);
+				this.ResultDB = this.preparedStatement.executeQuery();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDB.next()) {
+					this.ResultDB = null;
+					return true;
+				} else {
+					this.ResultDB = null;
+					return false;
+				}
+			} catch (SQLException error) {
+				this.ResultDB = null;
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return false;
+			}
+		}
+		return false;
+	}
+
 	public Users addUser(Users user) {
 		if (this.Connected) {
 			try {
@@ -355,6 +383,45 @@ public class MySQL {
 					this.ResultDB = null;
 					return user;
 				} else {
+					this.ResultDB = null;
+					return null;
+				}
+			} catch (SQLException error) {
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public Users updateUser(Users user) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "UPDATE ONLINE_AUCTIONS.USERS SET  Name = ?, Surname = ?, Email = ?, Phone = ?, Pass = ?, Account = ?, Address = ?, Town = ?, ZipCode = ? "
+						+ "WHERE User_ID = ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setString(1, user.getName());
+				this.preparedStatement.setString(2, user.getSurname());
+				this.preparedStatement.setString(3, user.getEmail());
+				this.preparedStatement.setInt(4, user.getPhone());
+				this.preparedStatement.setString(5, user.getPass());
+				this.preparedStatement.setInt(6, user.getAccount());
+				this.preparedStatement.setString(7, user.getAddress());
+				this.preparedStatement.setString(8, user.getTown());
+				this.preparedStatement.setString(9, user.getZipCode());
+				this.preparedStatement.setInt(10, user.getId());
+				this.preparedStatement.executeUpdate();
+				this.ResultDBCount = this.preparedStatement.getUpdateCount();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDBCount > 0) {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return user;
+				} else {
+					this.preparedStatement = null;
 					this.ResultDB = null;
 					return null;
 				}
@@ -678,6 +745,35 @@ public class MySQL {
 			}
 		}
 		return false;
+	}
+
+	public Auctions deleteAuctionById(Auctions auction) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "DELETE FROM ONLINE_AUCTIONS.AUCTIONS WHERE Auciton_ID = ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setInt(1, auction.getAucitonId());
+				this.ResultDBCount = this.preparedStatement.executeUpdate();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDBCount > 0) {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return auction;
+				} else {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return null;
+				}
+			} catch (SQLException error) {
+				this.ResultDB = null;
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
 	}
 
 	/*

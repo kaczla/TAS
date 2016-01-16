@@ -89,7 +89,8 @@ public class ImagesResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Delete image with {id}.")
 	public Response DeleteImage() throws SQLException {
-		return Response.status(Response.Status.NOT_IMPLEMENTED).entity("DELETE IS NOT IMPLEMENTED!").build();
+		return Response.status(Response.Status.NOT_IMPLEMENTED)
+				.entity("DELETE IS NOT IMPLEMENTED!\nFOR DELETE IMAGE USE PATH: images/{id}").build();
 	}
 
 	@Path("/{id}")
