@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -23,6 +24,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 public class ImageUploader implements Receiver, SucceededListener {
 	private InputStream fis = null;
 	private OutputStream fos = null;
+	private int imageId;
 
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		File file = null;
@@ -41,7 +43,7 @@ public class ImageUploader implements Receiver, SucceededListener {
 
 	public void uploadSucceeded(SucceededEvent event) {
 		CloseableHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://localhost:8080/images");
+		HttpPost post = new HttpPost(BaseInformation.serverURL + "images");
 		InputStreamEntity ent = new InputStreamEntity(fis);
 		post.setEntity(ent);
 		try {
@@ -63,17 +65,48 @@ public class ImageUploader implements Receiver, SucceededListener {
 	}
 
 	public HttpResponse uploadImage() {
-		CloseableHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://localhost:8080/images");
-		InputStreamEntity ent = new InputStreamEntity(fis);
-		post.setEntity(ent);
-		try {
-			HttpResponse response = httpClient.execute(post);
-			return response;
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return null;
+		if (this.imageId > 0) {
+			return this.updateImage();
+		} else {
+			CloseableHttpClient httpClient = new DefaultHttpClient();
+			HttpPost post = new HttpPost(BaseInformation.serverURL + "images/");
+			InputStreamEntity ent = new InputStreamEntity(fis);
+			post.setEntity(ent);
+			try {
+				HttpResponse response = httpClient.execute(post);
+				return response;
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+				return null;
+			}
 		}
+
+	}
+
+	public HttpResponse updateImage() {
+		if (this.imageId > 0) {
+			CloseableHttpClient httpClient = new DefaultHttpClient();
+			HttpPut put = new HttpPut(BaseInformation.serverURL + "images/" + this.imageId);
+			InputStreamEntity ent = new InputStreamEntity(fis);
+			put.setEntity(ent);
+			try {
+				HttpResponse response = httpClient.execute(put);
+				return response;
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+				return null;
+			}
+		} else {
+			return this.uploadImage();
+		}
+	}
+
+	public int getImageId() {
+		return this.imageId;
+	}
+
+	public void setImageId(int imageId) {
+		this.imageId = imageId;
 	}
 
 	public InputStream returnInputStream() {

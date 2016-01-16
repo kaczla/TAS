@@ -6,7 +6,6 @@ import java.util.Date;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
@@ -168,13 +167,6 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 				String responseString = null;
 				try {
 					responseString = EntityUtils.toString(entity, "UTF-8");
-				} catch (ParseException e) {
-					this.notification = new Notification("Error!", "Problem z połączeniem!",
-							Notification.Type.ERROR_MESSAGE);
-					this.notification.setDelayMsec(5000);
-					this.notification.show(Page.getCurrent());
-					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
-					return;
 				} catch (IOException e) {
 					this.notification = new Notification("Error!", "Problem z połączeniem!",
 							Notification.Type.ERROR_MESSAGE);

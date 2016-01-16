@@ -80,8 +80,9 @@ public class ImagesResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Update image.")
-	public Response UpdateImage() throws SQLException {
-		return Response.status(Response.Status.NOT_IMPLEMENTED).entity("PUT IS NOT IMPLEMENTED!").build();
+	public Response UpdateImage(InputStream image) throws SQLException {
+		return Response.status(Response.Status.NOT_IMPLEMENTED)
+				.entity("PUT IS NOT IMPLEMENTED!\nFOR UPDATE IMAGE USE PATH: images/{id}").build();
 	}
 
 	@DELETE
@@ -133,6 +134,34 @@ public class ImagesResource {
 						.entity("Problem with server! Please try again later!\n").build();
 			} else {
 				return Response.status(Response.Status.OK).entity(tmp).build();
+			}
+		}
+	}
+
+	@Path("/{id}")
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Update image.")
+	public Response UpdateImage(@PathParam("id") final int id, InputStream image) throws SQLException {
+		if (!this.database.IsConnected()) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Problem with server! Please try again later!\n").build();
+		}
+		if (id <= 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("ID is required!\n").build();
+		} else if (!this.database.checkExistImageById(id)) {
+			return Response.status(Response.Status.CONFLICT).entity("Image with id \"" + id + "\" not found!!\n")
+					.build();
+		} else {
+			Images tmp = new Images();
+			tmp.setImage(image);
+			tmp = this.database.updateImage(id, tmp);
+			if (tmp == null) {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("Problem with server! Please try again later!\n").build();
+			} else {
+				tmp.setImage(null);
+				return Response.status(Response.Status.CREATED).entity(tmp).build();
 			}
 		}
 	}

@@ -7,11 +7,15 @@ import java.util.Date;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
@@ -24,6 +28,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 
 import tasslegro.MyUI;
@@ -31,6 +36,7 @@ import tasslegro.base.BaseInformation;
 import tasslegro.base.Http_Get;
 import tasslegro.base.Http_Put;
 import tasslegro.base.ImageTasslegro;
+import tasslegro.base.ImageUploader;
 
 public class AuctionEdit extends CustomComponent implements View, Button.ClickListener {
 	VerticalLayout layout = new VerticalLayout();
@@ -71,6 +77,9 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 	TextField auctionTitle = new TextField();
 	TextArea auctionDescription = new TextArea();
 	TextField auctionPrice = new TextField();
+	ImageUploader receiverImage = new ImageUploader();
+	Upload uploadImage = new Upload(null, this.receiverImage);
+	Image auctionImage = new Image();
 	Label auctionDateStart = null;
 	Label auctionDateEnd = null;
 	Button buttonSend = new Button("Aktualizuj");
@@ -121,7 +130,6 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 					this.notification.setDelayMsec(5000);
 					this.notification.show(Page.getCurrent());
 					this.responseString = null;
-					return;
 				}
 			} catch (IOException e) {
 				System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
@@ -130,7 +138,6 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 				this.notification.setDelayMsec(5000);
 				this.notification.show(Page.getCurrent());
 				this.responseString = null;
-				return;
 			}
 
 			if (this.responseString == null) {
@@ -149,6 +156,19 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 				this.layout.addComponent(this.Price);
 				this.auctionPrice.setValue(String.valueOf(objects.getDouble("price")));
 				this.layout.addComponent(this.auctionPrice);
+				if (objects.getInt("imageId") > 0) {
+					this.auctionImage.setSource(new ExternalResource(
+							BaseInformation.serverURL + "images/" + String.valueOf(objects.getInt("imageId"))));
+					this.auctionImage.setWidth("250px");
+					this.auctionImage.setHeight("250px");
+					this.layout.addComponent(this.auctionImage);
+					this.receiverImage.setImageId(objects.getInt("imageId"));
+					this.uploadImage.setButtonCaption("Edytuj zdjęcie");
+				} else {
+					this.uploadImage.setButtonCaption("Dodaj zdjęcie");
+				}
+				this.uploadImage.setImmediate(true);
+				this.layout.addComponent(this.uploadImage);
 				try {
 					this.dateStart = DateUtils.parseDateStrictly(objects.getString("startDate"),
 							new String[] { "yyyy-MM-dd HH:mm:ss.S" });
@@ -178,6 +198,7 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 
 	@Override
 	public void buttonClick(ClickEvent event) {
+		int imageId = 0;
 		if (this.auctionTitle.getValue().equals("")) {
 			this.notification = new Notification("Error!", "Tytuł jest wymagany!", Notification.Type.ERROR_MESSAGE);
 			this.notification.setDelayMsec(5000);
@@ -207,6 +228,37 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 			this.notification.setDelayMsec(5000);
 			this.notification.show(Page.getCurrent());
 			return;
+		} else if (this.receiverImage.returnInputStream() != null) {
+			HttpResponse response = this.receiverImage.updateImage();
+			if (response == null) {
+				this.notification = new Notification("Error!", "Problem z połączeniem!",
+						Notification.Type.ERROR_MESSAGE);
+				this.notification.setDelayMsec(5000);
+				this.notification.show(Page.getCurrent());
+				return;
+			} else {
+				HttpEntity entity = response.getEntity();
+				String responseString = null;
+				try {
+					responseString = EntityUtils.toString(entity, "UTF-8");
+				} catch (IOException e) {
+					this.notification = new Notification("Error!", "Problem z połączeniem!",
+							Notification.Type.ERROR_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+					System.err.println("[ERROR] " + new Date() + ": " + e.getMessage());
+					return;
+				}
+				if (response.getStatusLine().getStatusCode() == 201) {
+					JSONObject msg = new JSONObject(responseString);
+					imageId = msg.getInt("id");
+				} else {
+					this.notification = new Notification("Error!", responseString, Notification.Type.ERROR_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+					return;
+				}
+			}
 		}
 		JSONObject msg = new JSONObject();
 		msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
@@ -214,8 +266,9 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 		msg.put("title", auctionTitle.getValue());
 		msg.put("description", auctionDescription.getValue());
 		msg.put("price", auctionPrice.getValue());
-		msg.put("user_ID", (((MyUI) UI.getCurrent()).getUserId()));
-		msg.put("auciton_ID", this.idAuction);
+		msg.put("userId", (((MyUI) UI.getCurrent()).getUserId()));
+		msg.put("aucitonId", this.idAuction);
+		msg.put("imageId", imageId);
 		try {
 			Http_Put put = new Http_Put(this.httpGetURL, msg.toString());
 			responseString = put.getStrinResponse();

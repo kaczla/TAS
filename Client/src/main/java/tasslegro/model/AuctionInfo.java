@@ -114,9 +114,6 @@ public class AuctionInfo extends CustomComponent implements View {
 				Http_Get get = new Http_Get(this.httpGetURL + this.idAuction);
 				this.responseString = get.getStrinResponse();
 				if (get.getStatusCode() == 200) {
-					this.notification = new Notification("OK", "Pobrano dane", Notification.Type.WARNING_MESSAGE);
-					this.notification.setDelayMsec(5000);
-					this.notification.show(Page.getCurrent());
 				} else {
 					this.notification = new Notification("Error!", this.responseString,
 							Notification.Type.ERROR_MESSAGE);

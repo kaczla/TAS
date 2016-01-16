@@ -541,12 +541,14 @@ public class MySQL {
 	public Auctions updateAuction(Auctions auction) {
 		if (this.Connected) {
 			try {
-				this.SQLQueryString = "UPDATE ONLINE_AUCTIONS.AUCTIONS SET Title = ?, Description = ?, Price = ? WHERE Auciton_ID = ?";
+				this.SQLQueryString = "UPDATE ONLINE_AUCTIONS.AUCTIONS SET Title = ?, Description = ?, Price = ?, Image_ID = ? "
+						+ "WHERE Auciton_ID = ?";
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
 				this.preparedStatement.setString(1, auction.getTitle());
 				this.preparedStatement.setString(2, auction.getDescription());
 				this.preparedStatement.setFloat(3, auction.getPrice());
-				this.preparedStatement.setFloat(4, auction.getAucitonId());
+				this.preparedStatement.setFloat(4, auction.getImageId());
+				this.preparedStatement.setFloat(5, auction.getAucitonId());
 				this.preparedStatement.executeUpdate();
 				this.ResultDBCount = this.preparedStatement.getUpdateCount();
 				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
@@ -758,6 +760,38 @@ public class MySQL {
 					this.ResultDB = null;
 					return tmp;
 				} else {
+					this.ResultDB = null;
+					return null;
+				}
+			} catch (SQLException error) {
+				this.ResultDB = null;
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public Images updateImage(int id, Images image) throws SQLException {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "UPDATE ONLINE_AUCTIONS.IMAGES SET Image = ? WHERE ID = ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setBlob(1, image.getImage());
+				this.preparedStatement.setInt(2, id);
+				this.preparedStatement.executeUpdate();
+				this.ResultDBCount = this.preparedStatement.getUpdateCount();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDBCount > 0) {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					image.setId(id);
+					return image;
+				} else {
+					this.preparedStatement = null;
 					this.ResultDB = null;
 					return null;
 				}
