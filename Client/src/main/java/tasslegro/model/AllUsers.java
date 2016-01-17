@@ -112,6 +112,7 @@ public class AllUsers extends CustomComponent implements View {
 			this.responseString = null;
 		}
 
+		this.table = new Table("Użytkownicy:");
 		this.table.addContainerProperty("Nazwa", String.class, null);
 		this.table.addContainerProperty("Email", String.class, null);
 		this.table.addContainerProperty("Imię", String.class, null);

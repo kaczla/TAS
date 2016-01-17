@@ -571,11 +571,11 @@ public class MySQL {
 		return null;
 	}
 
-	public List<Auctions> getAuctionBySearch(String title, float price, int userId) {
+	public List<Auctions> getAuctionBySearch(String title, String description, float price, int userId) {
 		if (this.Connected) {
 			try {
 				this.SQLQueryString = "SELECT Auciton_ID, User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price "
-						+ "FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Title LIKE ? ";
+						+ "FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Title LIKE ? AND Description LIKE ? ";
 				if (price > 0) {
 					this.SQLQueryString += "AND Price < ? ";
 				} else {
@@ -588,8 +588,9 @@ public class MySQL {
 				}
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
 				this.preparedStatement.setString(1, "%" + title + "%");
-				this.preparedStatement.setFloat(2, price);
-				this.preparedStatement.setInt(3, userId);
+				this.preparedStatement.setString(2, "%" + description + "%");
+				this.preparedStatement.setFloat(3, price);
+				this.preparedStatement.setInt(4, userId);
 				this.ResultDB = this.preparedStatement.executeQuery();
 				List<Auctions> AuctionList = new ArrayList<>();
 				while (this.ResultDB.next()) {
