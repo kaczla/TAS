@@ -67,7 +67,7 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 	TextField address = new TextField();
 	TextField town = new TextField();
 	TextField zipCode = new TextField();
-	Button register = new Button("ZAREJESTRUJ");
+	Button register = new Button("ZAREJESTRUJ", this);
 
 	Label labelName = new Label("Imie:");
 	Label labelSurname = new Label("Nazwisko:");
@@ -143,7 +143,6 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 			this.layout.addComponent(this.zipCode);
 			this.layout.addComponent(require);
 			this.register.setIcon(FontAwesome.SEND);
-			this.register.addClickListener(this);
 			this.layout.addComponent(this.register);
 		}
 	}

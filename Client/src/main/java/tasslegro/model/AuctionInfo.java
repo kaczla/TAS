@@ -22,6 +22,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -88,7 +89,10 @@ public class AuctionInfo extends CustomComponent implements View, Button.ClickLi
 			getUI().getNavigator().navigateTo(MyUI.AUCTION_EDIT);
 		}
 	});
-	Button auctionDelete = new Button("Usuń aukcjię");
+	Button auctionDelete = new Button("Usuń aukcjię", this);
+	Label auctionBindLabel = new Label("Zalicytuj:");
+	TextField auctionBind = new TextField();
+	Button auctionBindButton = new Button("Licytuj", this);
 
 	public AuctionInfo() {
 	}
@@ -192,8 +196,12 @@ public class AuctionInfo extends CustomComponent implements View, Button.ClickLi
 				if (((MyUI) UI.getCurrent()).getLogged()) {
 					if (((MyUI) UI.getCurrent()).getUserId() == objects.getInt("userId")) {
 						this.layout.addComponent(this.auctionEdit);
-						this.auctionDelete.addClickListener(this);
 						this.layout.addComponent(this.auctionDelete);
+					} else {
+						this.layout.addComponent(this.auctionBindLabel);
+						this.layout.addComponent(this.auctionBind);
+						this.auctionBindButton.setIcon(FontAwesome.SEND_O);
+						this.layout.addComponent(this.auctionBindButton);
 					}
 				}
 			}
@@ -202,32 +210,58 @@ public class AuctionInfo extends CustomComponent implements View, Button.ClickLi
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-		JSONObject msg = new JSONObject();
-		msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
-		msg.put("pass", (((MyUI) UI.getCurrent()).getUserPass()));
-		msg.put("userId", (((MyUI) UI.getCurrent()).getUserId()));
-		msg.put("aucitonId", NumberUtils.toInt(this.auctionId));
-		msg.put("imageId", this.auctionImageId);
-		try {
-			Http_Delete delete = new Http_Delete(this.httpDeleteURL, msg.toString());
-			responseString = delete.getStrinResponse();
-			if (delete.getStatusCode() == 201) {
-				this.notification = new Notification("OK", "Pomyślnie usunięto aukcjię!",
-						Notification.Type.WARNING_MESSAGE);
-				this.notification.setDelayMsec(5000);
-				this.notification.show(Page.getCurrent());
-				((MyUI) UI.getCurrent()).setAuctionId(null);
-				getUI().getNavigator().navigateTo(MyUI.MAIN);
-			} else {
-				this.notification = new Notification("Error!", responseString, Notification.Type.ERROR_MESSAGE);
+		if (event.getButton() == auctionDelete) {
+			JSONObject msg = new JSONObject();
+			msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
+			msg.put("pass", (((MyUI) UI.getCurrent()).getUserPass()));
+			msg.put("userId", (((MyUI) UI.getCurrent()).getUserId()));
+			msg.put("aucitonId", NumberUtils.toInt(this.auctionId));
+			msg.put("imageId", this.auctionImageId);
+			try {
+				Http_Delete delete = new Http_Delete(this.httpDeleteURL, msg.toString());
+				responseString = delete.getStrinResponse();
+				if (delete.getStatusCode() == 201) {
+					this.notification = new Notification("OK", "Pomyślnie usunięto aukcjię!",
+							Notification.Type.WARNING_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+					((MyUI) UI.getCurrent()).setAuctionId(null);
+					getUI().getNavigator().navigateTo(MyUI.MAIN);
+				} else {
+					this.notification = new Notification("Error!", responseString, Notification.Type.ERROR_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+				}
+			} catch (IOException e) {
+				System.err.println("-[ERROR] " + new Date() + ": " + e.getMessage());
+				this.notification = new Notification("Error!", "Problem z połączeniem!",
+						Notification.Type.ERROR_MESSAGE);
 				this.notification.setDelayMsec(5000);
 				this.notification.show(Page.getCurrent());
 			}
-		} catch (IOException e) {
-			System.err.println("-[ERROR] " + new Date() + ": " + e.getMessage());
-			this.notification = new Notification("Error!", "Problem z połączeniem!", Notification.Type.ERROR_MESSAGE);
-			this.notification.setDelayMsec(5000);
-			this.notification.show(Page.getCurrent());
+		} else if (event.getButton() == auctionBindButton) {
+			if (!NumberUtils.isNumber(this.auctionBind.getValue())) {
+				this.auctionPrice.setValue(this.auctionBind.getValue().replace(",", "."));
+				if (!NumberUtils.isNumber(this.auctionBind.getValue())) {
+					this.notification = new Notification("Error!", "Licytowana cena jest liczbą!",
+							Notification.Type.ERROR_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+					return;
+				}
+			} else if (NumberUtils.toDouble(this.auctionBind.getValue()) <= auctionPriceDouble) {
+				this.notification = new Notification("Error!", "Licytowana cena musi być większa niż podstawowa!",
+						Notification.Type.ERROR_MESSAGE);
+				this.notification.setDelayMsec(5000);
+				this.notification.show(Page.getCurrent());
+				return;
+			}
+			JSONObject msg = new JSONObject();
+			msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
+			msg.put("pass", (((MyUI) UI.getCurrent()).getUserPass()));
+			msg.put("aucitonId", NumberUtils.toInt(this.auctionId));
+			msg.put("bind", NumberUtils.toDouble(this.auctionBind.getValue()));
+			msg.put("bindId", (((MyUI) UI.getCurrent()).getUserId()));
 		}
 	}
 

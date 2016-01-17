@@ -12,7 +12,6 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
-import tasslegro.base.UserEdit;
 import tasslegro.model.AddAuction;
 import tasslegro.model.AllAuctions;
 import tasslegro.model.AllUsers;
@@ -22,6 +21,7 @@ import tasslegro.model.LoginUser;
 import tasslegro.model.LogoutUser;
 import tasslegro.model.MainSite;
 import tasslegro.model.Register;
+import tasslegro.model.UserEdit;
 import tasslegro.model.UserProfil;
 
 @Theme("mytheme")

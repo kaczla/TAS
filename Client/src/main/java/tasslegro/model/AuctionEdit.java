@@ -88,7 +88,7 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 	Image auctionImage = new Image();
 	Label auctionDateStart = null;
 	Label auctionDateEnd = null;
-	Button buttonSend = new Button("Aktualizuj");
+	Button buttonSend = new Button("Aktualizuj", this);
 
 	public AuctionEdit() {
 	}
@@ -197,7 +197,6 @@ public class AuctionEdit extends CustomComponent implements View, Button.ClickLi
 				}
 				this.auctionDateEnd = new Label("Koniec: " + this.dateFormat.format(this.dateEnd));
 				this.layout.addComponent(this.auctionDateEnd);
-				this.buttonSend.addClickListener(this);
 				this.buttonSend.setIcon(FontAwesome.SEND_O);
 				this.layout.addComponent(this.buttonSend);
 			}

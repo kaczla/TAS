@@ -50,7 +50,7 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 	PasswordField pass = new PasswordField();
 	Label labelLogin = new Label("Login:");
 	Label labelPass = new Label("Hasło:");
-	Button buttonSend = new Button("Zaloguj");
+	Button buttonSend = new Button("Zaloguj", this);
 
 	Notification notification = null;
 	String responseString = null;
@@ -86,7 +86,6 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 		this.layout.addComponent(this.labelPass);
 		this.layout.addComponent(this.pass);
 		this.buttonSend.setIcon(FontAwesome.LOCK);
-		this.buttonSend.addClickListener(this);
 		this.layout.addComponent(this.buttonSend);
 		this.layout.addComponent(this.buttonUserAdd);
 	}

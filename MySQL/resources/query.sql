@@ -37,7 +37,9 @@ Title varchar(128) NOT NULL,
 Description varchar(255) NOT NULL,
 Start_Date datetime DEFAULT NOW(),
 End_Date datetime DEFAULT NOW(),
-Price float NOT NULL,
+Price float NOT NULL DEFAULT 1.0,
+Bind float NOT NULL DEFAULT 1.0,
+Bind_ID int NOT NULL,
 PRIMARY KEY (Auciton_ID),
 FOREIGN KEY (User_ID) REFERENCES USERS(User_ID)
 ) DEFAULT CHARSET=utf8;

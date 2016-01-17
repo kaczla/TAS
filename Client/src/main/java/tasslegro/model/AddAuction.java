@@ -67,7 +67,7 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 	TextField auctionPrice = new TextField();
 	ImageUploader receiverImage = new ImageUploader();
 	Upload uploadImage = new Upload(null, this.receiverImage);
-	Button auctionButtonAdd = new Button("Wyślij");
+	Button auctionButtonAdd = new Button("Wyślij", this);
 
 	Label labelTitle = new Label("Tytuł:");
 	Label labelDescription = new Label("Opis:");
@@ -123,8 +123,6 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 			this.uploadImage.setButtonCaption("Dodaj");
 			this.uploadImage.setImmediate(true);
 			this.layout.addComponent(this.uploadImage);
-			this.auctionButtonAdd.setIcon(FontAwesome.HAND_O_RIGHT);
-			this.auctionButtonAdd.addClickListener(this);
 			this.auctionButtonAdd.setIcon(FontAwesome.SEND);
 			this.layout.addComponent(this.auctionButtonAdd);
 		}

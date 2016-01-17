@@ -155,7 +155,7 @@ public class AuctionsResource {
 	@Path("/{id}")
 	@GET
 	@ApiOperation(value = "Get auction by {id}.")
-	public Response getAuction(@PathParam("id") final int id) throws ClassNotFoundException, SQLException {
+	public Response getAuction(@PathParam("id") final int id) {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
 		cacheControl.setPrivate(false);
@@ -166,7 +166,6 @@ public class AuctionsResource {
 		cacheControl.setMaxAge(120);
 		Auctions Auction = this.database.getAuctionById(id);
 		if (Auction == null) {
-			System.out.println("NULL");
 			return Response.status(Response.Status.CONFLICT).cacheControl(cacheControl)
 					.entity("Auction with id \"" + id + "\" not found!\n").build();
 		} else {
@@ -198,4 +197,31 @@ public class AuctionsResource {
 		}
 	}
 
+	@Path("/offers")
+	@POST
+	@ApiOperation(value = "Send your offer.")
+	public Response updateOffers(AuctionsAuth auction) {
+		if (!this.database.IsConnected()) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Problem with server! Please try again later!\n").build();
+		}
+		if (auction.getAucitonId() <= 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Auction ID is required!\n").build();
+		} else if (auction.getUserId() <= 0) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User ID is required!\n").build();
+		} else if (this.database.checkExistUserById(auction.getUserId()) == false) {
+			return Response.status(Response.Status.CONFLICT)
+					.entity("User with id \"" + auction.getUserId() + "\" not found!\n").build();
+		} else if (this.database.checkAuthorization(auction.getLogin(), auction.getPass()) == false) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("NOT_FOUND").build();
+		} else {
+			Auctions tmp = this.database.updateAuction(auction);
+			if (tmp == null) {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("Problem with server! Please try again later!\n").build();
+			} else {
+				return Response.status(Response.Status.CREATED).entity(tmp).build();
+			}
+		}
+	}
 }

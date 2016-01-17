@@ -1,4 +1,4 @@
-package tasslegro.base;
+package tasslegro.model;
 
 import java.io.IOException;
 import java.util.Date;
@@ -23,6 +23,10 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import tasslegro.MyUI;
+import tasslegro.base.BaseInformation;
+import tasslegro.base.Http_Get;
+import tasslegro.base.Http_Put;
+import tasslegro.base.ImageTasslegro;
 
 public class UserEdit extends CustomComponent implements View, Button.ClickListener {
 	VerticalLayout layout = new VerticalLayout();
