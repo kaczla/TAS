@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,7 +39,8 @@ public class UsersResource {
 
 	@GET
 	@ApiOperation(value = "Zwraca wszystkich użytkowników")
-	public Response getUsers() throws ClassNotFoundException, SQLException {
+	public Response getUsers(@QueryParam("login") String login, @QueryParam("name") String name,
+			@QueryParam("surname") String surname) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
 		cacheControl.setPrivate(false);
@@ -47,12 +49,20 @@ public class UsersResource {
 					.entity("Problem with server! Please try again later!\n").build();
 		}
 		cacheControl.setMaxAge(120);
-		List<Users> UserList = this.database.getUsers();
+		List<Users> UserList = null;
+		if (login == null || name == null || surname == null) {
+			UserList = this.database.getUsers();
+		} else {
+			UserList = this.database.getUsersBySearch(login, name, surname);
+		}
 		if (UserList == null) {
 			return Response.status(Response.Status.NOT_FOUND).cacheControl(cacheControl).entity("No content!").build();
-		} else {
+		} else
+
+		{
 			return Response.status(Response.Status.OK).cacheControl(cacheControl).entity(UserList).build();
 		}
+
 	}
 
 	@POST

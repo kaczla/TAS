@@ -39,8 +39,8 @@ public class AuctionsResource {
 
 	@GET
 	@ApiOperation(value = "Zwraca wszystkie aukcję")
-	public Response getAuctions(@QueryParam("title") String title, @QueryParam("price") float price)
-			throws ClassNotFoundException, SQLException {
+	public Response getAuctions(@QueryParam("title") String title, @QueryParam("price") float price,
+			@QueryParam("userId") int userId) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
 		cacheControl.setPrivate(false);
@@ -50,13 +50,10 @@ public class AuctionsResource {
 		}
 		cacheControl.setMaxAge(120);
 		List<Auctions> AuctionsList = null;
-		if (price < 0) {
-			price = 0;
-		}
-		if (title == null || price <= 0) {
+		if (title == null || price < 0 || userId < 0) {
 			AuctionsList = this.database.getAuctions();
 		} else {
-			AuctionsList = this.database.getAuctionBySearch(title, price);
+			AuctionsList = this.database.getAuctionBySearch(title, price, userId);
 		}
 		if (AuctionsList == null) {
 			return Response.status(Response.Status.NOT_FOUND).cacheControl(cacheControl).entity("No content!").build();

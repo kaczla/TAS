@@ -126,6 +126,46 @@ public class MySQL {
 		return null;
 	}
 
+	public List<Users> getUsersBySearch(String login, String name, String surname) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "SELECT User_ID, Name, Surname, Email, Phone, Login, Account, Address, Town, ZipCode "
+						+ "FROM ONLINE_AUCTIONS.USERS_VIEW WHERE Login LIKE ? AND Name LIKE ? AND Surname LIKE ? ";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setString(1, "%" + login + "%");
+				this.preparedStatement.setString(2, name + "%");
+				this.preparedStatement.setString(3, surname + "%");
+				this.ResultDB = this.preparedStatement.executeQuery();
+				List<Users> UserList = new ArrayList<>();
+				while (this.ResultDB.next()) {
+					Users User = new Users();
+					User.setId(this.ResultDB.getInt("User_ID"));
+					User.setName(this.ResultDB.getString("Name"));
+					User.setSurname(this.ResultDB.getString("Surname"));
+					User.setEmail(this.ResultDB.getString("Email"));
+					User.setPhone(this.ResultDB.getInt("Phone"));
+					User.setLogin(this.ResultDB.getString("Login"));
+					User.setAccount(this.ResultDB.getInt("Account"));
+					User.setAddress(this.ResultDB.getString("Address"));
+					User.setTown(this.ResultDB.getString("Town"));
+					User.setZipCode(this.ResultDB.getString("ZipCode"));
+					UserList.add(User);
+				}
+				System.out.println("[LOG] " + new Date() + ": Done query: " + preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				this.ResultDB = null;
+				return UserList;
+			} catch (SQLException error) {
+				this.ResultDB = null;
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
+	}
+
 	public List<Users> getUsersByPage(int page) throws SQLException {
 		if (this.Connected) {
 			if (page < 1) {
@@ -531,14 +571,25 @@ public class MySQL {
 		return null;
 	}
 
-	public List<Auctions> getAuctionBySearch(String title, float price) {
+	public List<Auctions> getAuctionBySearch(String title, float price, int userId) {
 		if (this.Connected) {
 			try {
 				this.SQLQueryString = "SELECT Auciton_ID, User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price "
-						+ "FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Title LIKE ? AND Price < ?";
+						+ "FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Title LIKE ? ";
+				if (price > 0) {
+					this.SQLQueryString += "AND Price < ? ";
+				} else {
+					this.SQLQueryString += "AND Price > ? ";
+				}
+				if (userId > 0) {
+					this.SQLQueryString += "AND User_ID = ? ";
+				} else {
+					this.SQLQueryString += "AND User_ID != ? ";
+				}
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
 				this.preparedStatement.setString(1, "%" + title + "%");
 				this.preparedStatement.setFloat(2, price);
+				this.preparedStatement.setInt(3, userId);
 				this.ResultDB = this.preparedStatement.executeQuery();
 				List<Auctions> AuctionList = new ArrayList<>();
 				while (this.ResultDB.next()) {
