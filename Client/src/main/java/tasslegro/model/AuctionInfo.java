@@ -30,6 +30,7 @@ import tasslegro.MyUI;
 import tasslegro.base.BaseInformation;
 import tasslegro.base.Http_Delete;
 import tasslegro.base.Http_Get;
+import tasslegro.base.Http_Put;
 import tasslegro.base.ImageNoImage;
 import tasslegro.base.ImageTasslegro;
 
@@ -68,6 +69,7 @@ public class AuctionInfo extends CustomComponent implements View, Button.ClickLi
 	String responseString = null;
 	String httpGetURL = BaseInformation.serverURL + "auctions/";
 	String httpDeleteURL = BaseInformation.serverURL + "auctions/";
+	String httpPutURL = BaseInformation.serverURL + "auctions/offers/";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	Date dateStart = null;
 	Date dateEnd = null;
@@ -260,8 +262,30 @@ public class AuctionInfo extends CustomComponent implements View, Button.ClickLi
 			msg.put("login", (((MyUI) UI.getCurrent()).getUserLogin()));
 			msg.put("pass", (((MyUI) UI.getCurrent()).getUserPass()));
 			msg.put("aucitonId", NumberUtils.toInt(this.auctionId));
-			msg.put("bind", NumberUtils.toDouble(this.auctionBind.getValue()));
+			msg.put("price", NumberUtils.toDouble(this.auctionBind.getValue()));
 			msg.put("bindId", (((MyUI) UI.getCurrent()).getUserId()));
+			try {
+				Http_Put put = new Http_Put(this.httpPutURL, msg.toString());
+				responseString = put.getStrinResponse();
+				if (put.getStatusCode() == 201) {
+					this.notification = new Notification("OK", "Pomyślnie zalicytowano!",
+							Notification.Type.WARNING_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+					((MyUI) UI.getCurrent()).setAuctionId(null);
+					getUI().getNavigator().navigateTo(MyUI.MAIN);
+				} else {
+					this.notification = new Notification("Error!", responseString, Notification.Type.ERROR_MESSAGE);
+					this.notification.setDelayMsec(5000);
+					this.notification.show(Page.getCurrent());
+				}
+			} catch (IOException e) {
+				System.err.println("-[ERROR] " + new Date() + ": " + e.getMessage());
+				this.notification = new Notification("Error!", "Problem z połączeniem!",
+						Notification.Type.ERROR_MESSAGE);
+				this.notification.setDelayMsec(5000);
+				this.notification.show(Page.getCurrent());
+			}
 		}
 	}
 

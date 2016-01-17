@@ -614,8 +614,8 @@ public class MySQL {
 				this.preparedStatement.setString(1, auction.getTitle());
 				this.preparedStatement.setString(2, auction.getDescription());
 				this.preparedStatement.setFloat(3, auction.getPrice());
-				this.preparedStatement.setFloat(4, auction.getImageId());
-				this.preparedStatement.setFloat(5, auction.getAucitonId());
+				this.preparedStatement.setInt(4, auction.getImageId());
+				this.preparedStatement.setInt(5, auction.getAucitonId());
 				this.preparedStatement.executeUpdate();
 				this.ResultDBCount = this.preparedStatement.getUpdateCount();
 				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
@@ -745,6 +745,67 @@ public class MySQL {
 			}
 		}
 		return false;
+	}
+
+	public Boolean checkAuctionOfferPrice(Auctions auction) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "SELECT Auciton_ID FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Auciton_ID = ? AND Price < ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setInt(1, auction.getAucitonId());
+				this.preparedStatement.setFloat(2, auction.getPrice());
+				this.ResultDB = this.preparedStatement.executeQuery();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDB.next()) {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return true;
+				} else {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return false;
+				}
+			} catch (SQLException error) {
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public Auctions updateAuctionOffer(Auctions auction) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "UPDATE ONLINE_AUCTIONS.AUCTIONS SET Price = ?, Bind_ID = ? "
+						+ "WHERE Auciton_ID = ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setFloat(1, auction.getPrice());
+				this.preparedStatement.setInt(2, auction.getBindId());
+				this.preparedStatement.setInt(3, auction.getAucitonId());
+				this.preparedStatement.executeUpdate();
+				this.ResultDBCount = this.preparedStatement.getUpdateCount();
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				if (this.ResultDBCount > 0) {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return auction;
+				} else {
+					this.preparedStatement = null;
+					this.ResultDB = null;
+					return null;
+				}
+			} catch (SQLException error) {
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
 	}
 
 	public Auctions deleteAuctionById(Auctions auction) {

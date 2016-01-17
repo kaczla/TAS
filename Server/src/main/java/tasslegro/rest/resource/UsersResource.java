@@ -21,9 +21,9 @@ import tasslegro.rest.MySQL.MySQL;
 import tasslegro.rest.model.Users;
 
 @Path("/users")
-@Api(value = "users")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Api(value = "Użytkownicy")
+@Consumes(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
 public class UsersResource {
 
 	MySQL database = null;
@@ -37,7 +37,7 @@ public class UsersResource {
 	}
 
 	@GET
-	@ApiOperation(value = "Get list all users.")
+	@ApiOperation(value = "Zwraca wszystkich użytkowników")
 	public Response getUsers() throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -56,7 +56,7 @@ public class UsersResource {
 	}
 
 	@POST
-	@ApiOperation(value = "Add user.")
+	@ApiOperation(value = "Dodaje użytkownika")
 	public Response addUser(Users user) throws ClassNotFoundException, SQLException {
 		if (user == null) {
 			return Response.status(Response.Status.CONFLICT).entity("Get user to add!").build();
@@ -90,7 +90,7 @@ public class UsersResource {
 	}
 
 	@PUT
-	@ApiOperation(value = "Update user.")
+	@ApiOperation(value = "Aktualizuje użytkownika")
 	public Response updateUser(Users user) {
 		if (user == null) {
 			return Response.status(Response.Status.CONFLICT).entity("Get user to add!").build();
@@ -125,7 +125,7 @@ public class UsersResource {
 	}
 
 	@DELETE
-	@ApiOperation(value = "Delete user.")
+	@ApiOperation(value = "Usuwa użytkownika")
 	public Response deleteUser(Users user) {
 		if (user == null) {
 			return Response.status(Response.Status.CONFLICT).entity("Get user to add!").build();
@@ -140,7 +140,7 @@ public class UsersResource {
 
 	@Path("/{login}")
 	@GET
-	@ApiOperation(value = "Get information about user with {login}.")
+	@ApiOperation(value = "Zwaraca użytkownika z loginem {login}")
 	public Response getUser(@PathParam("login") final String login) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -161,7 +161,7 @@ public class UsersResource {
 
 	@Path("/pages/{page}")
 	@GET
-	@ApiOperation(value = "Get user page {page}.")
+	@ApiOperation(value = "Zwraca stronę o numerze {page} z użytkownikami")
 	public Response getUser(@PathParam("page") final int page) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -185,7 +185,7 @@ public class UsersResource {
 
 	@Path("/ids/{id}")
 	@POST
-	@ApiOperation(value = "Get details about user {id}.")
+	@ApiOperation(value = "Szczegółowe informację o użytkownika z identyfikatorem {id}")
 	public Response getUserDetail(@PathParam("id") final int id, Users user)
 			throws ClassNotFoundException, SQLException {
 		if (user == null) {

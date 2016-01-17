@@ -22,11 +22,10 @@ import tasslegro.rest.model.Auctions;
 import tasslegro.rest.model.AuctionsAuth;
 
 @Path("/auctions")
-@Api(value = "auctions")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Api(value = "Aukcje")
+@Consumes(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
 public class AuctionsResource {
-
 	MySQL database = null;
 
 	public AuctionsResource() throws ClassNotFoundException, SQLException {
@@ -38,7 +37,7 @@ public class AuctionsResource {
 	}
 
 	@GET
-	@ApiOperation(value = "Get all auctions.")
+	@ApiOperation(value = "Zwraca wszystkie aukcję")
 	public Response getAuctions() throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -57,7 +56,7 @@ public class AuctionsResource {
 	}
 
 	@POST
-	@ApiOperation(value = "Add auction.")
+	@ApiOperation(value = "Dodanie aukcji")
 	public Response addAuction(Auctions auction) throws ClassNotFoundException, SQLException {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -86,7 +85,7 @@ public class AuctionsResource {
 	}
 
 	@PUT
-	@ApiOperation(value = "Update auction.")
+	@ApiOperation(value = "Aktualizacja aukcji")
 	public Response updateAuction(AuctionsAuth auction) {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -119,7 +118,7 @@ public class AuctionsResource {
 	}
 
 	@DELETE
-	@ApiOperation(value = "Delete auction.")
+	@ApiOperation(value = "Usunięcie aukcji")
 	public Response deleteAuction(AuctionsAuth auction) {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -154,7 +153,7 @@ public class AuctionsResource {
 
 	@Path("/{id}")
 	@GET
-	@ApiOperation(value = "Get auction by {id}.")
+	@ApiOperation(value = "Zwraca aukcję z identyfikatorem {id}")
 	public Response getAuction(@PathParam("id") final int id) {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -175,7 +174,7 @@ public class AuctionsResource {
 
 	@Path("/pages/{page}")
 	@GET
-	@ApiOperation(value = "Get auction page {page}.")
+	@ApiOperation(value = "Zwraca stronę o numerze {page} z aukcjami")
 	public Response getAuctions(@PathParam("page") final int page) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -198,8 +197,8 @@ public class AuctionsResource {
 	}
 
 	@Path("/offers")
-	@POST
-	@ApiOperation(value = "Send your offer.")
+	@PUT
+	@ApiOperation(value = "Aktualizuje ofertę licytacji")
 	public Response updateOffers(AuctionsAuth auction) {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -207,15 +206,17 @@ public class AuctionsResource {
 		}
 		if (auction.getAucitonId() <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Auction ID is required!\n").build();
-		} else if (auction.getUserId() <= 0) {
+		} else if (auction.getBindId() <= 0) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).entity("User ID is required!\n").build();
-		} else if (this.database.checkExistUserById(auction.getUserId()) == false) {
+		} else if (this.database.checkExistUserById(auction.getBindId()) == false) {
 			return Response.status(Response.Status.CONFLICT)
-					.entity("User with id \"" + auction.getUserId() + "\" not found!\n").build();
+					.entity("User with id \"" + auction.getBindId() + "\" not found!\n").build();
 		} else if (this.database.checkAuthorization(auction.getLogin(), auction.getPass()) == false) {
 			return Response.status(Response.Status.UNAUTHORIZED).entity("NOT_FOUND").build();
+		} else if (this.database.checkAuctionOfferPrice(auction) == false) {
+			return Response.status(Response.Status.CONFLICT).entity("Offer price must by greater!\n").build();
 		} else {
-			Auctions tmp = this.database.updateAuction(auction);
+			Auctions tmp = this.database.updateAuctionOffer(auction);
 			if (tmp == null) {
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 						.entity("Problem with server! Please try again later!\n").build();
