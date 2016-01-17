@@ -22,7 +22,7 @@ import tasslegro.rest.MySQL.MySQL;
 import tasslegro.rest.model.Images;
 
 @Path("/images")
-@Api(value = "images")
+@Api(value = "Zdjęcia")
 @Consumes("image/png")
 @Produces("image/png")
 public class ImagesResource {
@@ -38,8 +38,8 @@ public class ImagesResource {
 	}
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Get all images.")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+	@ApiOperation(value = "Zwraca wszystkie zdjęcia")
 	public Response getImages() throws SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -58,8 +58,8 @@ public class ImagesResource {
 	}
 
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Add image.")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+	@ApiOperation(value = "Dodaje zdjęcie")
 	public Response addImage(InputStream image) throws SQLException {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -77,25 +77,9 @@ public class ImagesResource {
 		}
 	}
 
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Update image.")
-	public Response UpdateImage(InputStream image) throws SQLException {
-		return Response.status(Response.Status.NOT_IMPLEMENTED)
-				.entity("PUT IS NOT IMPLEMENTED!\nFOR UPDATE IMAGE USE PATH: images/{id}").build();
-	}
-
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Delete image with {id}.")
-	public Response DeleteImage() throws SQLException {
-		return Response.status(Response.Status.NOT_IMPLEMENTED)
-				.entity("DELETE IS NOT IMPLEMENTED!\nFOR DELETE IMAGE USE PATH: images/{id}").build();
-	}
-
 	@Path("/{id}")
 	@GET
-	@ApiOperation(value = "Get image with {id}.")
+	@ApiOperation(value = "Zwraca zdjęcie z identyfikatorem {id}")
 	public Response getImage(@PathParam("id") final int id) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
@@ -116,8 +100,8 @@ public class ImagesResource {
 
 	@Path("/{id}")
 	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Delete image with {id}.")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+	@ApiOperation(value = "Usuwa zdjęcie z identyfikatorem {id}")
 	public Response DeleteImage(@PathParam("id") final int id) throws SQLException {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -141,8 +125,8 @@ public class ImagesResource {
 
 	@Path("/{id}")
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Update image.")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+	@ApiOperation(value = "Aktualizuje zdjęcie z identyfikatorem {id}")
 	public Response UpdateImage(@PathParam("id") final int id, InputStream image) throws SQLException {
 		if (!this.database.IsConnected()) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -169,8 +153,8 @@ public class ImagesResource {
 
 	@Path("/pages/{page}")
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Get image page {page}.")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+	@ApiOperation(value = "Zwraca stronę o numerze {page} z zdjęciami")
 	public Response getUser(@PathParam("page") final int page) throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);

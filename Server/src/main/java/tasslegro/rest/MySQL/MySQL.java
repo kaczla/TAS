@@ -531,6 +531,43 @@ public class MySQL {
 		return null;
 	}
 
+	public List<Auctions> getAuctionBySearch(String title, float price) {
+		if (this.Connected) {
+			try {
+				this.SQLQueryString = "SELECT Auciton_ID, User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price "
+						+ "FROM ONLINE_AUCTIONS.AUCTIONS_VIEW WHERE Title LIKE ? AND Price < ?";
+				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
+				this.preparedStatement.setString(1, "%" + title + "%");
+				this.preparedStatement.setFloat(2, price);
+				this.ResultDB = this.preparedStatement.executeQuery();
+				List<Auctions> AuctionList = new ArrayList<>();
+				while (this.ResultDB.next()) {
+					Auctions Auction = new Auctions();
+					Auction.setAucitonId(this.ResultDB.getInt("Auciton_ID"));
+					Auction.setUserId(this.ResultDB.getInt("User_ID"));
+					Auction.setImageId(this.ResultDB.getInt("Image_ID"));
+					Auction.setTitle(this.ResultDB.getString("Title"));
+					Auction.setDescription(this.ResultDB.getString("Description"));
+					Auction.setStartDate(this.ResultDB.getString("Start_Date"));
+					Auction.setEndDate(this.ResultDB.getString("End_Date"));
+					Auction.setPrice(this.ResultDB.getFloat("Price"));
+					AuctionList.add(Auction);
+				}
+				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				this.ResultDB = null;
+				return AuctionList;
+			} catch (SQLException error) {
+				this.ResultDB = null;
+				System.err.println("[ERROR] " + new Date() + ": " + error.getMessage());
+				System.err.println("[ERROR] " + new Date() + ": Can not do query: " + this.preparedStatement.toString()
+						+ " in connection: " + this.ConnectionDBAddres);
+				return null;
+			}
+		}
+		return null;
+	}
+
 	public List<Auctions> getAuctionsByPage(int page) throws SQLException {
 		if (this.Connected) {
 			if (page < 1) {

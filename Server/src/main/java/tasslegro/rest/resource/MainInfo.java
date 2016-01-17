@@ -35,6 +35,7 @@ public class MainInfo {
 
 		msg += "&emsp;<b>/auctions</b> - list all auctions</br>";
 		msg += "&emsp;&emsp;<b>/{id}</b> - auction <b>id</b></br>";
+		msg += "&emsp;&emsp;<b>/offers</b> - offers for auction</br>";
 		msg += "&emsp;&emsp;<b>/pages/{id}</b> - page number <b>id</b></br>";
 		msg += "</br>";
 

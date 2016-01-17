@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,7 +39,8 @@ public class AuctionsResource {
 
 	@GET
 	@ApiOperation(value = "Zwraca wszystkie aukcję")
-	public Response getAuctions() throws ClassNotFoundException, SQLException {
+	public Response getAuctions(@QueryParam("title") String title, @QueryParam("price") float price)
+			throws ClassNotFoundException, SQLException {
 		CacheControl cacheControl = new CacheControl();
 		cacheControl.setMaxAge(10);
 		cacheControl.setPrivate(false);
@@ -47,7 +49,15 @@ public class AuctionsResource {
 					.entity("Problem with server! Please try again later!\n").build();
 		}
 		cacheControl.setMaxAge(120);
-		List<Auctions> AuctionsList = this.database.getAuctions();
+		List<Auctions> AuctionsList = null;
+		if (price < 0) {
+			price = 0;
+		}
+		if (title == null || price <= 0) {
+			AuctionsList = this.database.getAuctions();
+		} else {
+			AuctionsList = this.database.getAuctionBySearch(title, price);
+		}
 		if (AuctionsList == null) {
 			return Response.status(Response.Status.NOT_FOUND).cacheControl(cacheControl).entity("No content!").build();
 		} else {
