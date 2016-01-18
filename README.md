@@ -57,7 +57,7 @@ Uruchomienie każdej z aplikacje opisane jest:
 
 ### Uwagi:
 
-W każdym folderze znajdują się niezbędne dane do zaimportowania praojektu do Eclipse.
+W każdym folderze znajdują się niezbędne dane do zaimportowania projektu do Eclipse.
 </br>
 W pracach wykorzystaliśmy: [Eclipse IDE for Java EE Developers](https://www.eclipse.org/downloads)
 * Eclipse Java EE IDE for Web Developers.

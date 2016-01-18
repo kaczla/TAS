@@ -247,7 +247,6 @@ public class MySQL {
 		MySQL Database = new MySQL();
 		Database.StartConnection();
 		Database.DoQueryFromFile("/query.sql");
-		Database.addImage("error.png");
 		Database.finalize();
 	}
 }
