@@ -3,6 +3,7 @@ package tasslegro.model;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -88,6 +89,7 @@ public class MainSite extends CustomComponent implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.layout = new VerticalLayout();
+		this.layout.setDefaultComponentAlignment(Alignment.TOP_CENTER);
 		setCompositionRoot(this.layout);
 		this.layout.setSizeFull();
 		this.layout.setMargin(true);
@@ -113,6 +115,7 @@ public class MainSite extends CustomComponent implements View {
 
 		this.imageLogo.setSource(ImageTasslegro.getImageSource());
 		this.layout.addComponent(this.imageLogo);
+		// this.layout.setComponentAlignment(this.panel, Alignment.TOP_CENTER);
 
 		HorizontalLayout level1 = new HorizontalLayout();
 		level1.setSpacing(true);

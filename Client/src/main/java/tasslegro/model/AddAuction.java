@@ -197,9 +197,11 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 		msg.put("description", auctionDescription.getValue());
 		msg.put("price", auctionPrice.getValue());
 		msg.put("userId", userId);
+		msg.put("bindId", userId);
 		msg.put("imageId", imageId);
 		try {
 			Http_Post post = new Http_Post(this.httpPostURL, msg.toString());
+			responseString = post.getStrinResponse();
 			if (post.getStatusCode() == 201) {
 				this.notification = new Notification("OK", "Pomyślnie dodano aukcjię!",
 						Notification.Type.WARNING_MESSAGE);

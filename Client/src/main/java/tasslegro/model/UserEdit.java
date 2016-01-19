@@ -258,7 +258,11 @@ public class UserEdit extends CustomComponent implements View, Button.ClickListe
 		}
 		try {
 			Http_Put put = new Http_Put(this.httpPutURL, msg.toString());
-			if (put.getStatusCode() == 201) {
+			responseString = put.getStrinResponse();
+			if (put.getStatusCode() == 200) {
+				if (this.userPass.isEmpty() == false) {
+					((MyUI) UI.getCurrent()).setUserPass(this.userPass.getValue());
+				}
 				this.notification = new Notification("OK", "Pomyślnie edytowano dane użytkownika!",
 						Notification.Type.WARNING_MESSAGE);
 				this.notification.setDelayMsec(5000);

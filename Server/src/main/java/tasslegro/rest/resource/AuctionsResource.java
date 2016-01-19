@@ -51,7 +51,7 @@ public class AuctionsResource {
 		}
 		cacheControl.setMaxAge(120);
 		List<Auctions> AuctionsList = null;
-		if (title == null || price < 0 || userId < 0) {
+		if ((title == null && description == null) || price < 0 || userId < 0) {
 			AuctionsList = this.database.getAuctions();
 		} else {
 			AuctionsList = this.database.getAuctionBySearch(title, description, price, userId);

@@ -664,14 +664,15 @@ public class MySQL {
 	public Auctions addAuction(Auctions auction) {
 		if (this.Connected) {
 			try {
-				this.SQLQueryString = "INSERT INTO ONLINE_AUCTIONS.AUCTIONS(User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price) "
-						+ "VALUES (?, ?, ?, ?, NOW(), DATE_ADD(NOW(),INTERVAL 2 WEEK), ?)";
+				this.SQLQueryString = "INSERT INTO ONLINE_AUCTIONS.AUCTIONS(User_ID, Image_ID, Title, Description, Start_Date, End_Date, Price, Bind_ID) "
+						+ "VALUES (?, ?, ?, ?, NOW(), DATE_ADD(NOW(),INTERVAL 2 WEEK), ?, ?)";
 				this.preparedStatement = this.ConnectionDB.prepareStatement(this.SQLQueryString);
 				this.preparedStatement.setInt(1, auction.getUserId());
 				this.preparedStatement.setInt(2, auction.getImageId());
 				this.preparedStatement.setString(3, auction.getTitle());
 				this.preparedStatement.setString(4, auction.getDescription());
 				this.preparedStatement.setFloat(5, auction.getPrice());
+				this.preparedStatement.setFloat(6, auction.getBindId());
 				this.preparedStatement.executeUpdate();
 				this.ResultDB = this.preparedStatement.getGeneratedKeys();
 				System.out.println("[LOG] " + new Date() + ": Done query: " + this.preparedStatement.toString()

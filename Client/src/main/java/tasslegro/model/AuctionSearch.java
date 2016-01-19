@@ -77,7 +77,7 @@ public class AuctionSearch extends CustomComponent implements View, Button.Click
 	TextField auctionTitle = new TextField();
 	Label auctionLabelDescription = new Label("Opis:");
 	TextField auctionDescription = new TextField();
-	Label auctionLabelPrice = new Label("Cena:");
+	Label auctionLabelPrice = new Label("Cena mniejsza niż:");
 	TextField auctionPrice = new TextField();
 	Button auctionButtonSend = new Button("Wyszukaj", this);
 

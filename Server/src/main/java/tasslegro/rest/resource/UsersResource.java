@@ -128,7 +128,7 @@ public class UsersResource {
 					return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 							.entity("Problem with server! Please try again later!\n").build();
 				} else {
-					return Response.status(Response.Status.CREATED).entity(tmp).build();
+					return Response.status(Response.Status.OK).entity(tmp).build();
 				}
 			}
 		}
