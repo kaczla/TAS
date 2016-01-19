@@ -12,6 +12,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -79,6 +80,8 @@ public class LoginUser extends CustomComponent implements View, Button.ClickList
 
 		this.imageLogo.setSource(ImageTasslegro.getImageSource());
 		this.layout.addComponent(this.imageLogo);
+		this.layout.setComponentAlignment(this.imageLogo, Alignment.TOP_CENTER);
+		this.layout.setComponentAlignment(this.panel, Alignment.TOP_CENTER);
 
 		this.layout.addComponent(this.labelLogin);
 		this.login.setValidationVisible(true);

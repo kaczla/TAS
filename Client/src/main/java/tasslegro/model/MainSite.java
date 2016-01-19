@@ -115,7 +115,6 @@ public class MainSite extends CustomComponent implements View {
 
 		this.imageLogo.setSource(ImageTasslegro.getImageSource());
 		this.layout.addComponent(this.imageLogo);
-		// this.layout.setComponentAlignment(this.panel, Alignment.TOP_CENTER);
 
 		HorizontalLayout level1 = new HorizontalLayout();
 		level1.setSpacing(true);

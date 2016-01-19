@@ -13,6 +13,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -107,12 +108,15 @@ public class AddAuction extends CustomComponent implements View, Button.ClickLis
 			this.buttonLoginUser.setIcon(FontAwesome.LOCK);
 			this.panel.addComponent(this.buttonLoginUser);
 		}
+		this.imageLogo.setSource(ImageTasslegro.getImageSource());
+		this.layout.addComponent(this.imageLogo);
 		this.layout.addComponent(this.panel);
+		this.layout.setComponentAlignment(this.imageLogo, Alignment.TOP_CENTER);
+		this.layout.setComponentAlignment(this.panel, Alignment.TOP_CENTER);
+
 		if (((MyUI) UI.getCurrent()).getLogged() == false) {
 			this.layout.addComponent(new Label("Zaloguj się!"));
 		} else {
-			this.imageLogo.setSource(ImageTasslegro.getImageSource());
-			this.layout.addComponent(this.imageLogo);
 			this.layout.addComponent(this.labelTitle);
 			this.layout.addComponent(this.auctionTitle);
 			this.layout.addComponent(this.labelDescription);

@@ -9,6 +9,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -114,12 +115,14 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 			this.panel.addComponent(this.buttonLoginUser);
 		}
 		this.layout.addComponent(this.panel);
+		this.imageLogo.setSource(ImageTasslegro.getImageSource());
+		this.layout.addComponent(this.imageLogo);
+		this.layout.setComponentAlignment(this.imageLogo, Alignment.TOP_CENTER);
+		this.layout.setComponentAlignment(this.panel, Alignment.TOP_CENTER);
 
 		if (((MyUI) UI.getCurrent()).getLogged() == true) {
 			this.layout.addComponent(new Label("Jesteś już zalogowany!"));
 		} else {
-			this.imageLogo.setSource(ImageTasslegro.getImageSource());
-			this.layout.addComponent(this.imageLogo);
 			this.layout.addComponent(this.labelName);
 			this.layout.addComponent(this.name);
 			this.layout.addComponent(this.labelSurname);
@@ -201,6 +204,7 @@ public class Register extends CustomComponent implements View, Button.ClickListe
 		}
 		try {
 			Http_Post post = new Http_Post(this.httpPostURL, msg.toString());
+			this.responseString = post.getStrinResponse();
 			if (post.getStatusCode() == 201) {
 				this.notification = new Notification("OK", "Pomyślnie dodano użytkownika!",
 						Notification.Type.WARNING_MESSAGE);
